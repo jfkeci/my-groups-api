@@ -11,7 +11,7 @@ import { CommentsService } from '../service/comments.service';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 
-@Controller('comments')
+@Controller('')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
