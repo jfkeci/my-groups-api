@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,15 +8,110 @@ datasource db {
 }
 
 model users {
-  id                     Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                   String    @db.VarChar(127)
-  username               String    @unique(map: "username_UNIQUE") @db.VarChar(45)
-  email                  String    @unique(map: "email_UNIQUE") @db.VarChar(127)
-  password               String    @db.VarChar(127)
-  bio                    String?   @db.VarChar(127)
-  image                  String?   @db.VarChar(255)
-  isEmailVerified        Boolean?  @default(false)
-  emailVerificationToken String?   @db.VarChar(125)
-  createdAt              DateTime? @default(now()) @db.DateTime(0)
-  updatedAt              DateTime? @default(now()) @db.DateTime(0)
+  id                     Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt              DateTime           @default(now()) @db.DateTime(0)
+  updatedAt              DateTime           @default(now()) @db.DateTime(0)
+  username               String             @db.VarChar(125)
+  email                  String             @db.VarChar(125)
+  firstName              String?            @db.VarChar(125)
+  lastName               String?            @db.VarChar(125)
+  birthdate              DateTime?          @db.DateTime(0)
+  role                   String             @db.VarChar(45)
+  bio                    String?            @db.VarChar(300)
+  image                  String?            @db.VarChar(125)
+  emailVerificationToken String?            @db.VarChar(125)
+  isEmailVerified        Int?               @default(0) @db.TinyInt
+  comments               comments[]
+  communities            communities[]
+  communityMembers       communityMembers[]
+  postLikes              postLikes[]
+  postTypes              postTypes[]
+  posts                  posts[]
+}
+
+model communities {
+  id               Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt        DateTime?          @default(now()) @db.DateTime(0)
+  updatedAt        DateTime?          @default(now()) @db.DateTime(0)
+  title            String             @db.VarChar(125)
+  description      String?            @db.VarChar(255)
+  image            String?            @db.VarChar(125)
+  createdBy        Int                @db.UnsignedInt
+  users            users              @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityCreatedBy")
+  communityMembers communityMembers[]
+  posts            posts[]
+
+  @@index([createdBy], map: "communityCreatedBy_idx")
+}
+
+model communityMembers {
+  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt   DateTime?   @default(now()) @db.DateTime(0)
+  community   Int         @db.UnsignedInt
+  user        Int         @db.UnsignedInt
+  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityMembersCommunity")
+  users       users       @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityUser")
+
+  @@index([user], map: "communityUser_idx")
+  @@index([community], map: "communityMembersCommunity_idx")
+}
+
+model postTypes {
+  id          Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  title       String    @db.VarChar(45)
+  description String?   @db.VarChar(125)
+  structure   Json
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  createdBy   Int       @db.UnsignedInt
+  users       users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postTypeCreatedBy")
+  posts       posts[]
+
+  @@index([createdBy], map: "postTypeCreatedBy_idx")
+}
+
+model posts {
+  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt   DateTime?   @default(now()) @db.DateTime(0)
+  updatedAt   DateTime?   @default(now()) @db.DateTime(0)
+  createdBy   Int         @db.UnsignedInt
+  community   Int         @db.UnsignedInt
+  type        Int         @db.UnsignedInt
+  title       String?     @db.VarChar(125)
+  body        String?     @db.VarChar(255)
+  image       String?     @db.VarChar(125)
+  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
+  users       users       @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
+  postTypes   postTypes   @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postType")
+  comments    comments[]
+  postLikes   postLikes[]
+
+  @@index([community], map: "postCommunity_idx")
+  @@index([createdBy], map: "postCreatedBy_idx")
+  @@index([type], map: "postType")
+}
+
+model comments {
+  id        Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  updatedAt DateTime? @default(now()) @db.DateTime(0)
+  createdBy Int       @db.UnsignedInt
+  post      Int       @db.UnsignedInt
+  text      String    @db.VarChar(255)
+  users     users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "commentCreatedBy")
+  posts     posts     @relation(fields: [post], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "commentPost")
+
+  @@index([createdBy], map: "commentCreatedBy_idx")
+  @@index([post], map: "commentPost_idx")
+}
+
+model postLikes {
+  id        Int       @id
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  userId    Int       @db.UnsignedInt
+  postId    Int       @db.UnsignedInt
+  posts     posts     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postLikePost")
+  users     users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postLikeUser")
+
+  @@index([postId], map: "postLikePost_idx")
+  @@index([userId], map: "postLikeUser_idx")
 }
