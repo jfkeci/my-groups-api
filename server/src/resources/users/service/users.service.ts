@@ -19,6 +19,14 @@ export class UsersService {
     await this.prisma.users.findMany(query);
   }
 
+  async _findFirst(query) {
+    return await this.prisma.users.findFirst({ where: query });
+  }
+
+  async _findUnique(query) {
+    return await this.prisma.users.findUnique({ where: query });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }

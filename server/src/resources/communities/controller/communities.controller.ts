@@ -10,36 +10,40 @@ import {
 import { CommunitiesService } from '../service/communities.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
+import { CommunityIdParamDto } from '../dto/community-params.dto';
 
 @Controller('communities')
 export class CommunitiesController {
-  constructor(private readonly communitiesService: CommunitiesService) {}
+  constructor(private readonly connumityService: CommunitiesService) {}
 
   @Post()
-  create(@Body() createCommunityDto: CreateCommunityDto) {
-    return this.communitiesService.create(createCommunityDto);
+  create(@Body() data: CreateCommunityDto) {
+    return this.connumityService.createOne(data);
   }
 
   @Get()
-  findAll() {
-    return this.communitiesService.findAll();
+  findMany() {
+    return this.connumityService.findMany({});
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.communitiesService.findOne(+id);
+  @Get(':communityId')
+  findOne(@Param() params: CommunityIdParamDto) {
+    return this.connumityService.findUnique({ id: Number(params.communityId) });
   }
 
-  @Patch(':id')
+  @Patch(':communityId')
   update(
-    @Param('id') id: string,
-    @Body() updateCommunityDto: UpdateCommunityDto,
+    @Param() params: CommunityIdParamDto,
+    @Body() data: UpdateCommunityDto,
   ) {
-    return this.communitiesService.update(+id, updateCommunityDto);
+    return this.connumityService.updateOne(
+      { id: Number(params.communityId) },
+      data,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.communitiesService.remove(+id);
+  @Delete(':communityId')
+  deleteOne(@Param() params: CommunityIdParamDto) {
+    return this.connumityService.deleteOne({ id: Number(params.communityId) });
   }
 }

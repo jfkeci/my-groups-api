@@ -1,26 +1,100 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { UsersService } from 'src/resources/users/service/users.service';
+import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
 
 @Injectable()
 export class CommunitiesService {
-  create(createCommunityDto: CreateCommunityDto) {
-    return 'This action adds a new community';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
+
+  async createOne(data: CreateCommunityDto) {
+    const user = await this.userService._findUnique({
+      id: Number(data.createdBy),
+    });
+
+    if (!user) throw new NotFoundException('No user found');
+
+    const community = await this.prisma.communities.create({ data });
+
+    if (!community) throw new BadRequestException('Failed to create community');
+
+    return community;
   }
 
-  findAll() {
-    return `This action returns all communities`;
+  async findMany(query) {
+    const communities = await this.prisma.communities.findMany({
+      where: query,
+    });
+
+    if (!communities || !communities.length) {
+      throw new NotFoundException('No communities found');
+    }
+
+    return communities;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} community`;
+  async updateOne(query, data: UpdateCommunityDto) {
+    const community = await this.prisma.communities.update({
+      where: query,
+      data,
+    });
+
+    if (!community) throw new BadRequestException('Failed to update community');
+
+    return community;
   }
 
-  update(id: number, updateCommunityDto: UpdateCommunityDto) {
-    return `This action updates a #${id} community`;
+  async deleteOne(query) {
+    const community = await this.prisma.communities.delete({ where: query });
+
+    if (!community) throw new BadRequestException('Failed to delete community');
+
+    return community;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} community`;
+  async findUnique(query) {
+    const community = await this.prisma.communities.findUnique({
+      where: query,
+    });
+
+    if (!community) throw new BadRequestException('No community found');
+
+    return community;
+  }
+
+  async _update(query, data: UpdateCommunityDto) {
+    return await this.prisma.communities.update({ where: query, data });
+  }
+
+  async _updateMany(query, data: UpdateCommunityDto) {
+    return await this.prisma.communities.updateMany({ where: query, data });
+  }
+
+  async _delete(query) {
+    return await this.prisma.communities.delete({ where: query });
+  }
+
+  async _deleteMany(query) {
+    return await this.prisma.communities.deleteMany({ where: query });
+  }
+
+  async _findMany(query) {
+    return await this.prisma.communities.findMany({ where: query });
+  }
+
+  async _findFirst(query) {
+    return await this.prisma.communities.findFirst({ where: query });
+  }
+
+  async _findUnique(query) {
+    return await this.prisma.communities.findUnique({ where: query });
   }
 }
