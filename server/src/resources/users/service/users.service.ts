@@ -1,15 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createOne(createUserDto?: CreateUserDto) {
+    const user = await this._create({
+      username: 'jfkeci',
+      email: 'jfkeci@gmail.com',
+      password: '123test321',
+      role: 'user',
+    });
+
+    if (!user) throw new BadRequestException('Failed to create user');
+
+    return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async _findMany(query: any) {
+    await this.prisma.users.findMany(query);
   }
 
   findOne(id: number) {
@@ -22,5 +34,9 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async _create(data: any) {
+    return await this.prisma.users.create({ data });
   }
 }

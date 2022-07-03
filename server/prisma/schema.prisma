@@ -9,18 +9,19 @@ datasource db {
 
 model users {
   id                     Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  createdAt              DateTime           @default(now()) @db.DateTime(0)
-  updatedAt              DateTime           @default(now()) @db.DateTime(0)
-  username               String             @db.VarChar(125)
-  email                  String             @db.VarChar(125)
+  createdAt              DateTime?          @default(now()) @db.DateTime(0)
+  updatedAt              DateTime?          @default(now()) @db.DateTime(0)
+  username               String             @unique(map: "username_UNIQUE") @db.VarChar(125)
+  email                  String             @unique(map: "email_UNIQUE") @db.VarChar(125)
   firstName              String?            @db.VarChar(125)
   lastName               String?            @db.VarChar(125)
   birthdate              DateTime?          @db.DateTime(0)
-  role                   String             @db.VarChar(45)
+  role                   String?            @db.VarChar(45)
   bio                    String?            @db.VarChar(300)
   image                  String?            @db.VarChar(125)
   emailVerificationToken String?            @db.VarChar(125)
-  isEmailVerified        Int?               @default(0) @db.TinyInt
+  isEmailVerified        Boolean            @default(false)
+  password               String             @db.VarChar(255)
   comments               comments[]
   communities            communities[]
   communityMembers       communityMembers[]
