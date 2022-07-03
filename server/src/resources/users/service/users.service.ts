@@ -7,13 +7,8 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createOne(createUserDto?: CreateUserDto) {
-    const user = await this._create({
-      username: 'jfkeci',
-      email: 'jfkeci@gmail.com',
-      password: '123test321',
-      role: 'user',
-    });
+  async createOne(data: CreateUserDto) {
+    const user = await this._create(data);
 
     if (!user) throw new BadRequestException('Failed to create user');
 
@@ -28,7 +23,7 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number, data: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
