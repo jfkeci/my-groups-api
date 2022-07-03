@@ -62,15 +62,15 @@ export class AuthService {
         to: newUser.email,
         subject: 'Verify your email',
         html: `<html>
-      <h1>Email verification</h1>
-      <br><hr><br>
-      <h3>
-      <a href="${emailConfirmationUrl}">
-      Verify email
-      </a>
-      </h3>
-      <br><br>
-      </html>`,
+        <h1>Email verification</h1>
+        <br><hr><br>
+        <h3>
+        <a href="${emailConfirmationUrl}">
+        Verify email
+        </a>
+        </h3>
+        <br><br>
+        </html>`,
       });
     }
 
