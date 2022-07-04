@@ -10,33 +10,34 @@ import {
 import { PostsService } from '../service/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { PostIdParamDto } from '../dto/post-params.dto';
 
 @Controller('')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() data: CreatePostDto) {
+    return this.postService.createOne(data);
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findMany() {
+    return this.postService.findMany({});
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  @Get(':postId')
+  findOne(@Param() params: PostIdParamDto) {
+    return this.postService.findUnique({ id: Number(params.postId) });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  @Patch(':postId')
+  update(@Param() params: PostIdParamDto, @Body() data: UpdatePostDto) {
+    return this.postService.updateOne({ id: Number(params.postId) }, data);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  @Delete(':postId')
+  deleteOne(@Param() params: PostIdParamDto) {
+    return this.postService.deleteOne({ id: Number(params.postId) });
   }
 }

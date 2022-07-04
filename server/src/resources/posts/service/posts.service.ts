@@ -1,26 +1,100 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { UsersService } from 'src/resources/users/service/users.service';
+import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 
 @Injectable()
 export class PostsService {
-  create(data: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
+
+  async createOne(data: CreatePostDto) {
+    const user = await this.userService._findUnique({
+      id: Number(data.createdBy),
+    });
+
+    if (!user) throw new NotFoundException('No user found');
+
+    const post = await this.prisma.posts.create({ data });
+
+    if (!post) throw new BadRequestException('Failed to create post');
+
+    return post;
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findMany(query) {
+    const posts = await this.prisma.posts.findMany({
+      where: query,
+    });
+
+    if (!posts || !posts.length) {
+      throw new NotFoundException('No posts found');
+    }
+
+    return posts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async updateOne(query, data: UpdatePostDto) {
+    const post = await this.prisma.posts.update({
+      where: query,
+      data,
+    });
+
+    if (!post) throw new BadRequestException('Failed to update post');
+
+    return post;
   }
 
-  update(id: number, data: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async deleteOne(query) {
+    const post = await this.prisma.posts.delete({ where: query });
+
+    if (!post) throw new BadRequestException('Failed to delete post');
+
+    return post;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async findUnique(query) {
+    const post = await this.prisma.posts.findUnique({
+      where: query,
+    });
+
+    if (!post) throw new BadRequestException('No post found');
+
+    return post;
+  }
+
+  async _update(query, data: UpdatePostDto) {
+    return await this.prisma.posts.update({ where: query, data });
+  }
+
+  async _updateMany(query, data: UpdatePostDto) {
+    return await this.prisma.posts.updateMany({ where: query, data });
+  }
+
+  async _delete(query) {
+    return await this.prisma.posts.delete({ where: query });
+  }
+
+  async _deleteMany(query) {
+    return await this.prisma.posts.deleteMany({ where: query });
+  }
+
+  async _findMany(query) {
+    return await this.prisma.posts.findMany({ where: query });
+  }
+
+  async _findFirst(query) {
+    return await this.prisma.posts.findFirst({ where: query });
+  }
+
+  async _findUnique(query) {
+    return await this.prisma.posts.findUnique({ where: query });
   }
 }
