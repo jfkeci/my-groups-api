@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { LoginUserDto } from '../dto/login-user.dto';
@@ -11,7 +11,7 @@ import { RegisterUserDto } from '../dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
 import {
   generateJwt,
-  generateToken,
+  generateToken
 } from 'src/utilities/utils/gen-token.utils';
 import { VerifyEmailDto } from '../dto/verify-email.dto';
 import { sendEmail } from 'src/utilities/utils/mailer.utils';
@@ -25,8 +25,8 @@ export class AuthService {
 
     const users = await this.prisma.users.findMany({
       where: {
-        OR: [{ username: data.username }, { email: data.email }],
-      },
+        OR: [{ username: data.username }, { email: data.email }]
+      }
     });
 
     if (users.length && users.some((u) => u.username == data.username)) {
@@ -46,8 +46,8 @@ export class AuthService {
         ...data,
         emailVerificationToken:
           process.env.NODE_ENV == 'development' ? '' : token,
-        isEmailVerified: process.env.NODE_ENV == 'development' ? true : false,
-      },
+        isEmailVerified: process.env.NODE_ENV == 'development' ? true : false
+      }
     });
 
     if (!newUser) throw new BadRequestException('Failed to create user');
@@ -58,7 +58,7 @@ export class AuthService {
       const emailConfirmationUrl = `${process.env.BASE_URL}/api/auth/verify/${newUser.id}/${token}`;
 
       await sendEmail({
-        from: 'picitt@info.com',
+        from: 'my-groups@info.com',
         to: newUser.email,
         subject: 'Verify your email',
         html: `<html>
@@ -70,7 +70,7 @@ export class AuthService {
         </a>
         </h3>
         <br><br>
-        </html>`,
+        </html>`
       });
     }
 
@@ -79,7 +79,7 @@ export class AuthService {
       password: null,
       emailVerificationToken: null,
       verifyEmailUrl: emailConfirmationUrl ?? '',
-      token: await generateJwt({ id: newUser.id, username: newUser.username }),
+      token: await generateJwt({ id: newUser.id, username: newUser.username })
     };
   }
 
@@ -110,7 +110,7 @@ export class AuthService {
       return {
         ...user,
         password: null,
-        token: await generateJwt({ id: user.id, username: user.username }),
+        token: await generateJwt({ id: user.id, username: user.username })
       };
     } else {
       throw new UnauthorizedException('Not authorised');
@@ -121,15 +121,15 @@ export class AuthService {
     const user = await this.prisma.users.findFirst({
       where: {
         id: Number(data.userId),
-        emailVerificationToken: data.token,
-      },
+        emailVerificationToken: data.token
+      }
     });
 
     if (!user) throw new NotFoundException('No user found');
 
     const updatedUser = await this.prisma.users.update({
       where: { id: Number(data.userId) },
-      data: { emailVerificationToken: '', isEmailVerified: true },
+      data: { emailVerificationToken: '', isEmailVerified: true }
     });
 
     if (!updatedUser) throw new BadRequestException('Failed to update user');
