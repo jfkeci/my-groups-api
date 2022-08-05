@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -27,8 +31,14 @@ export class UsersService {
     return await this.prisma.users.findUnique({ where: query });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userId: number) {
+    const user = await this.prisma.users.findFirst({
+      where: { id: userId }
+    });
+
+    if (!user) throw new NotFoundException('No user found');
+
+    return user;
   }
 
   update(id: number, data: UpdateUserDto) {

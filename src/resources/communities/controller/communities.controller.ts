@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete
 } from '@nestjs/common';
 import { CommunitiesService } from '../service/communities.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
@@ -34,11 +34,11 @@ export class CommunitiesController {
   @Patch(':communityId')
   update(
     @Param() params: CommunityIdParamDto,
-    @Body() data: UpdateCommunityDto,
+    @Body() data: UpdateCommunityDto
   ) {
     return this.connumityService.updateOne(
       { id: Number(params.communityId) },
-      data,
+      data
     );
   }
 
