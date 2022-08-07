@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
@@ -12,26 +12,26 @@ import { UpdatePostTypeDto } from '../dto/update-post-type.dto';
 export class PostTypesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly userService: UsersService,
+    private readonly userService: UsersService
   ) {}
 
   async createOne(data: CreatePostTypeDto) {
     const user = await this.userService._findUnique({
-      id: Number(data.createdBy),
+      id: Number(data.createdBy)
     });
 
     if (!user) throw new NotFoundException('No user found');
 
-    const post = await this.prisma.postTypes.create({ data });
+    const postType = await this.prisma.postTypes.create({ data });
 
-    if (!post) throw new BadRequestException('Failed to create post');
+    if (!postType) throw new BadRequestException('Failed to create post type');
 
-    return post;
+    return postType;
   }
 
   async findMany(query) {
     const posts = await this.prisma.postTypes.findMany({
-      where: query,
+      where: query
     });
 
     if (!posts || !posts.length) {
@@ -44,7 +44,7 @@ export class PostTypesService {
   async updateOne(query, data: UpdatePostTypeDto) {
     const post = await this.prisma.postTypes.update({
       where: query,
-      data,
+      data
     });
 
     if (!post) throw new BadRequestException('Failed to update post');
@@ -62,7 +62,7 @@ export class PostTypesService {
 
   async findUnique(query) {
     const post = await this.prisma.postTypes.findUnique({
-      where: query,
+      where: query
     });
 
     if (!post) throw new BadRequestException('No post found');

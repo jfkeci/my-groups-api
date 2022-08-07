@@ -1,4 +1,5 @@
 import { CommentsModule } from 'src/resources/comments/comments.module';
+import { CommunitiesModule } from 'src/resources/communities/communities.module';
 import { PostLikesModule } from 'src/resources/post-likes/post-likes.module';
 import { PostsModule } from 'src/resources/posts/posts.module';
 
@@ -9,12 +10,22 @@ export const routerConfig = [
     children: [
       {
         path: ':postId/post-likes',
-        module: PostLikesModule,
+        module: PostLikesModule
       },
       {
         path: ':postId/comments',
-        module: CommentsModule,
-      },
-    ],
+        module: CommentsModule
+      }
+    ]
   },
+  {
+    path: 'communities',
+    module: CommunitiesModule,
+    children: [
+      {
+        path: ':communityId/members',
+        module: PostLikesModule
+      }
+    ]
+  }
 ];

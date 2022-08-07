@@ -79,7 +79,10 @@ export class AuthService {
       password: null,
       emailVerificationToken: null,
       verifyEmailUrl: emailConfirmationUrl ?? '',
-      token: await generateJwt({ id: newUser.id, username: newUser.username })
+      token: await generateJwt(
+        { id: newUser.id, username: newUser.username },
+        process.env.TOKEN_SECRET
+      )
     };
   }
 
@@ -110,7 +113,10 @@ export class AuthService {
       return {
         ...user,
         password: null,
-        token: await generateJwt({ id: user.id, username: user.username })
+        token: await generateJwt(
+          { id: user.id, username: user.username },
+          process.env.TOKEN_SECRET
+        )
       };
     } else {
       throw new UnauthorizedException('Not authorised');

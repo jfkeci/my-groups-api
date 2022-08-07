@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete
 } from '@nestjs/common';
 import { PostsService } from '../service/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -16,6 +16,11 @@ import { PostIdParamDto } from '../dto/post-params.dto';
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
+  @Get(':postId')
+  findOne(@Param() params: PostIdParamDto) {
+    return this.postService.findUnique({ id: Number(params.postId) });
+  }
+
   @Post()
   create(@Body() data: CreatePostDto) {
     return this.postService.createOne(data);
@@ -24,11 +29,6 @@ export class PostsController {
   @Get()
   findMany() {
     return this.postService.findMany({});
-  }
-
-  @Get(':postId')
-  findOne(@Param() params: PostIdParamDto) {
-    return this.postService.findUnique({ id: Number(params.postId) });
   }
 
   @Patch(':postId')

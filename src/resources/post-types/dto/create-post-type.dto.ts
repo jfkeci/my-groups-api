@@ -3,7 +3,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  Length,
+  Length
 } from 'class-validator';
 
 export class CreatePostTypeDto {
@@ -21,6 +21,6 @@ export class CreatePostTypeDto {
   @IsNotEmpty()
   createdBy: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   structure: any;
 }

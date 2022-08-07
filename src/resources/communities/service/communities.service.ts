@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
@@ -12,12 +12,12 @@ import { UpdateCommunityDto } from '../dto/update-community.dto';
 export class CommunitiesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly userService: UsersService,
+    private readonly userService: UsersService
   ) {}
 
   async createOne(data: CreateCommunityDto) {
     const user = await this.userService._findUnique({
-      id: Number(data.createdBy),
+      id: Number(data.createdBy)
     });
 
     if (!user) throw new NotFoundException('No user found');
@@ -26,12 +26,19 @@ export class CommunitiesService {
 
     if (!community) throw new BadRequestException('Failed to create community');
 
+    await this.prisma.communityMembers.create({
+      data: {
+        community: community.id,
+        user: data.createdBy
+      }
+    });
+
     return community;
   }
 
   async findMany(query) {
     const communities = await this.prisma.communities.findMany({
-      where: query,
+      where: query
     });
 
     if (!communities || !communities.length) {
@@ -44,7 +51,7 @@ export class CommunitiesService {
   async updateOne(query, data: UpdateCommunityDto) {
     const community = await this.prisma.communities.update({
       where: query,
-      data,
+      data
     });
 
     if (!community) throw new BadRequestException('Failed to update community');
@@ -62,7 +69,7 @@ export class CommunitiesService {
 
   async findUnique(query) {
     const community = await this.prisma.communities.findUnique({
-      where: query,
+      where: query
     });
 
     if (!community) throw new BadRequestException('No community found');

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
@@ -41,15 +42,96 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, data: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async getUserCommunities(userId: number) {
+    const communities = await this.prisma.communityMembers.findMany({
+      where: { user: userId },
+      include: {
+        communities: {
+          select: {
+            id: true,
+            title: true,
+            description: true
+          }
+        }
+      }
+    });
+
+    if (!communities || !communities.length) {
+      throw new NotFoundException(
+        'No communities found for user, please create a new community'
+      );
+    }
+
+    return communities;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async getUserCommunityPosts(
+    userId: number,
+    communityId: number,
+    createdBy: boolean
+  ) {
+    const memberships = await this.prisma.communityMembers.findMany({
+      where: { user: userId },
+      include: { communities: { select: { id: true } } }
+    });
+
+    if (!memberships || !memberships.length) {
+      throw new ForbiddenException('User is not a member of this community');
+    }
+
+    const postsQuery: any[] = [{ community: communityId }];
+
+    if (createdBy) {
+      postsQuery.push({ createdBy: userId });
+    }
+
+    const posts = await this.prisma.posts.findMany({
+      where: {
+        AND: postsQuery
+      }
+    });
+
+    if (!posts || !posts.length) {
+      throw new NotFoundException('No posts found for user');
+    }
+
+    return posts;
+  }
+
+  async getUserPostsForAllCommunities(userId: number, createdBy: boolean) {
+    const memberships = await this.prisma.communityMembers.findMany({
+      where: { user: userId },
+      include: { communities: { select: { id: true } } }
+    });
+
+    if (!memberships) {
+      throw new NotFoundException('No communities that user belongs to found');
+    }
+
+    console.log({
+      where: {
+        AND: memberships.map((m) => ({ community: m.communities.id }))
+      }
+    });
+
+    const posts = await this.prisma.posts.findMany({
+      where: {
+        AND: memberships.map((m) => ({ community: m.communities.id }))
+      }
+    });
+
+    if (!posts || !posts.length) {
+      throw new NotFoundException('No posts found');
+    }
+
+    return posts;
   }
 
   async _create(data: any) {
     return await this.prisma.users.create({ data });
+  }
+
+  async _findOne(query: Record<string, any>) {
+    return await this.prisma.users.findFirst({ where: query });
   }
 }
