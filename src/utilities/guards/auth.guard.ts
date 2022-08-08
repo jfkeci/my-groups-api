@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
    * @returns boolean
    */
   private ignoreAuth(context): boolean {
-    const ignoredControllers = [];
+    const ignoredControllers = ['AuthController'];
 
     return (
       process.env.NODE_ENV === 'development' &&
