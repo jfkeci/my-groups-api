@@ -5,7 +5,8 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  HttpCode
 } from '@nestjs/common';
 import { CommunitiesService } from '../service/communities.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
@@ -16,21 +17,25 @@ import { CommunityIdParamDto } from '../dto/community-params.dto';
 export class CommunitiesController {
   constructor(private readonly connumityService: CommunitiesService) {}
 
+  @HttpCode(201)
   @Post()
   create(@Body() data: CreateCommunityDto) {
     return this.connumityService.createOne(data);
   }
 
+  @HttpCode(200)
   @Get()
   findMany() {
     return this.connumityService.findMany({});
   }
 
+  @HttpCode(200)
   @Get(':communityId')
   findOne(@Param() params: CommunityIdParamDto) {
     return this.connumityService.findUnique({ id: Number(params.communityId) });
   }
 
+  @HttpCode(200)
   @Patch(':communityId')
   update(
     @Param() params: CommunityIdParamDto,
@@ -42,6 +47,7 @@ export class CommunitiesController {
     );
   }
 
+  @HttpCode(204)
   @Delete(':communityId')
   deleteOne(@Param() params: CommunityIdParamDto) {
     return this.connumityService.deleteOne({ id: Number(params.communityId) });
