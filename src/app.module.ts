@@ -33,10 +33,10 @@ import { CommunityMembersModule } from './resources/community-members/community-
     CommunityMembersModule
   ],
   providers: [
-    /* {
+    {
       provide: APP_GUARD,
       useClass: AuthGuard
-    } */
+    }
   ]
 })
 export class AppModule {}
