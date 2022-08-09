@@ -29,6 +29,16 @@ export class PostTypesService {
     return postType;
   }
 
+  async getPostTypes() {
+    const postTypes = await this.prisma.postTypes.findMany({ where: {} });
+
+    if (!postTypes || !postTypes.length) {
+      throw new NotFoundException('No post types found');
+    }
+
+    return postTypes;
+  }
+
   async findMany(query) {
     const posts = await this.prisma.postTypes.findMany({
       where: query

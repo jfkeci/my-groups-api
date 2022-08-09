@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { PostTypesService } from '../service/post-types.service';
 import { CreatePostTypeDto } from '../dto/create-post-type.dto';
 
@@ -6,8 +6,15 @@ import { CreatePostTypeDto } from '../dto/create-post-type.dto';
 export class PostTypesController {
   constructor(private readonly postTypesService: PostTypesService) {}
 
+  @HttpCode(201)
   @Post()
-  createPostType(@Body() data: CreatePostTypeDto) {
+  createOne(@Body() data: CreatePostTypeDto) {
     return this.postTypesService.createOne(data);
+  }
+
+  @HttpCode(200)
+  @Get()
+  getPostTypes() {
+    return this.postTypesService.getPostTypes();
   }
 }
