@@ -87,6 +87,8 @@ export class AuthService {
   }
 
   async loginUser(data: LoginUserDto) {
+    console.log(data);
+
     let query;
 
     if (!data) {
