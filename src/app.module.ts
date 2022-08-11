@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import validation from './utilities/config/validation.config';
 import { AuthGuard } from './utilities/guards/auth.guard';
 import { CommunityMembersModule } from './resources/community-members/community-members.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommunityMembersModule } from './resources/community-members/community-
       provide: APP_GUARD,
       useClass: AuthGuard
     } */
-  ]
+  ],
+  controllers: [AppController]
 })
 export class AppModule {}

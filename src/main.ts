@@ -7,8 +7,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.setGlobalPrefix(process.env.APP_ROUTE_PREFIX);
-
   app.enableCors();
 
   await app.listen(process.env.PORT ?? 13372);
