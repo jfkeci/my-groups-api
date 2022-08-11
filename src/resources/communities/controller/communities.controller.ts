@@ -13,7 +13,7 @@ import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
 import { CommunityIdParamDto } from '../dto/community-params.dto';
 
-@Controller('communities')
+@Controller('')
 export class CommunitiesController {
   constructor(private readonly connumityService: CommunitiesService) {}
 
