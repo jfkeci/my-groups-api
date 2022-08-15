@@ -31,8 +31,14 @@ export class CommunitiesController {
 
   @HttpCode(200)
   @Get(':communityId')
-  findOne(@Param() params: CommunityIdParamDto) {
+  findUnique(@Param() params: CommunityIdParamDto) {
     return this.connumityService.findUnique({ id: Number(params.communityId) });
+  }
+
+  @HttpCode(200)
+  @Get(':communityId/users')
+  getCommunityUsers(@Param() params: CommunityIdParamDto) {
+    return this.connumityService.getCommunityUsers(Number(params.communityId));
   }
 
   @HttpCode(200)

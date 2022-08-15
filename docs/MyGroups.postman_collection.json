@@ -1,0 +1,660 @@
+{
+	"info": {
+		"_postman_id": "5539580f-b32c-4d40-bd1a-63d4eff4374b",
+		"name": "MyGroups",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15523728"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Register user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"if(jsonData.id){",
+											"    pm.collectionVariables.set(\"authUserId\", jsonData.id);",
+											"}",
+											"    ",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"jfkeci\",\n    \"email\": \"jfkeci@gmail.com\",\n    \"password\": \"test1234\",\n    \"confirmPassword\": \"test1234\",\n    \"firstName\": \"filip\",\n    \"lastName\": \"kecilobas\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"if(jsonData.id){",
+											"    pm.collectionVariables.set(\"authUserId\", jsonData.id);",
+											"}",
+											"",
+											"if(jsonData.token){",
+											"    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+											"}",
+											"    ",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"jfkeci@gmail.com\",\n    \"password\": \"test1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify email",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/auth/verify/:userId/:token",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"verify",
+										":userId",
+										":token"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": null
+										},
+										{
+											"key": "token",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User-posts",
+					"item": [
+						{
+							"name": "Get user community posts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/:userId/posts/:communityId?createdBy=false",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										":userId",
+										"posts",
+										":communityId"
+									],
+									"query": [
+										{
+											"key": "createdBy",
+											"value": "false"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "{{authUserId}}"
+										},
+										{
+											"key": "communityId",
+											"value": "{{communityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user community posts from all communities",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/:userId/posts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										":userId",
+										"posts"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "{{authUserId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User-communities",
+					"item": [
+						{
+							"name": "Get user communities",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user/:userId/communities",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										":userId",
+										"communities"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "{{authUserId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{authUserId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Post types",
+					"item": [
+						{
+							"name": "Create post type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)\r",
+											"\r",
+											"if(jsonData.id){\r",
+											"    pm.collectionVariables.set(\"postTypeId\", jsonData.id);\r",
+											"}\r",
+											"    \r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"test\",\r\n    \"description\": \"test post type\", \r\n    \"createdBy\": {{authUserId}}, \r\n    \"structure\": {\"type\": \"info\"} \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/post-types",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"post-types"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get post types",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(jsonData.id){\r",
+									"    pm.collectionVariables.set(\"postId\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"test-post-2\",\r\n    \"body\": \"test-body-2\",\r\n    \"createdBy\": {{authUserId}},\r\n    \"community\": {{communityId}},\r\n    \"type\": {{postTypeId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/posts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get post",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Communities",
+			"item": [
+				{
+					"name": "Memberships",
+					"item": [
+						{
+							"name": "Add community member",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get community users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/communities/:communityId/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"communities",
+										":communityId",
+										"users"
+									],
+									"variable": [
+										{
+											"key": "communityId",
+											"value": "{{communityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create community",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"if(jsonData.id){",
+									"    pm.collectionVariables.set(\"communityId\", jsonData.id);",
+									"}",
+									"    ",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"new-community\",\n    \"createdBy\": {{authUserId}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get community",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/:communityId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								":communityId"
+							],
+							"variable": [
+								{
+									"key": "communityId",
+									"value": "{{communityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update community info",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"\",\r\n    \"description\": \"\",\r\n    \"image\": \"\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities/:communityId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								":communityId"
+							],
+							"variable": [
+								{
+									"key": "communityId",
+									"value": "{{communityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get communities",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete community",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/:communityId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								":communityId"
+							],
+							"variable": [
+								{
+									"key": "communityId",
+									"value": "{{communityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assets",
+			"item": [
+				{
+					"name": "Get static assets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/assets/leaflet-marker.png",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets",
+								"leaflet-marker.png"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:13372/api",
+			"type": "string"
+		},
+		{
+			"key": "authUserId",
+			"value": ""
+		},
+		{
+			"key": "authToken",
+			"value": ""
+		},
+		{
+			"key": "communityId",
+			"value": ""
+		},
+		{
+			"key": "postTypeId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "postId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

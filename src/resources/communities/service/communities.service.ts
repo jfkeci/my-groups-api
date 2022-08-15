@@ -67,6 +67,30 @@ export class CommunitiesService {
     return community;
   }
 
+  async getCommunityUsers(communityId: number) {
+    const community = await this.prisma.communities.findUnique({
+      where: { id: communityId },
+      include: {
+        communityMembers: {
+          include: {
+            users: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!community) throw new NotFoundException('No community found');
+
+    return community;
+  }
+
   async findUnique(query) {
     const community = await this.prisma.communities.findUnique({
       where: query
