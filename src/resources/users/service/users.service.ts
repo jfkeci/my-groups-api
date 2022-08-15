@@ -127,6 +127,20 @@ export class UsersService {
     return posts;
   }
 
+  async updateUser(userId: number, data: any) {
+    //
+  }
+
+  async deleteUser(userId: number) {
+    const user = await this.prisma.users.delete({
+      where: { id: Number(userId) }
+    });
+
+    if (!user) throw new NotFoundException('No user found');
+
+    return user;
+  }
+
   async _create(data: any) {
     return await this.prisma.users.create({ data });
   }

@@ -3,7 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  Length,
+  Length
 } from 'class-validator';
 import { Match } from 'src/utilities/decorators/validation-match.decorator';
 

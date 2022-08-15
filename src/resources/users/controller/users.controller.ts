@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserIdParamDto } from '../dto/user-id-param.dto';
 import { UserCommunityParamsDto } from 'src/resources/communities/dto/user-community-params.dto';
@@ -11,6 +11,11 @@ export class UsersController {
   @Get('/:userId')
   getUser(@Param() param: UserIdParamDto) {
     return this.usersService.findOne(Number(param.userId));
+  }
+
+  @Delete('/:userId')
+  deleteUser(@Param() param: UserIdParamDto) {
+    return this.usersService.deleteUser(Number(param.userId));
   }
 
   @Get('/:userId/communities')
