@@ -42,8 +42,7 @@ import { WinstonModule } from 'nest-winston';
         maxFiles: process.env.LOG_MAX_FILES,
         maxSize: process.env.LOG_MAX_FILE_SIZE
       })
-    ),
-    AssetsModule
+    )
   ],
   providers: [
     /* {
