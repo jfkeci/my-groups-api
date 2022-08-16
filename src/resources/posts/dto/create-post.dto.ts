@@ -30,7 +30,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   community: number;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  type: number;
+  type: string;
 }

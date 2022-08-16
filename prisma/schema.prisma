@@ -24,10 +24,10 @@ model users {
   password               String             @db.VarChar(255)
   comments               comments[]
   communities            communities[]
-  communityMembers       communityMembers[]
-  postLikes              postLikes[]
-  postTypes              postTypes[]
+  communitymembers       communitymembers[]
+  postlikes              postlikes[]
   posts                  posts[]
+  posttypes              posttypes[]
 }
 
 model communities {
@@ -39,35 +39,10 @@ model communities {
   image            String?            @db.VarChar(125)
   createdBy        Int                @db.UnsignedInt
   users            users              @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityCreatedBy")
-  communityMembers communityMembers[]
+  communitymembers communitymembers[]
   posts            posts[]
 
   @@index([createdBy], map: "communityCreatedBy_idx")
-}
-
-model communityMembers {
-  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  createdAt   DateTime?   @default(now()) @db.DateTime(0)
-  community   Int         @db.UnsignedInt
-  user        Int         @db.UnsignedInt
-  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityMembersCommunity")
-  users       users       @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityUser")
-
-  @@index([user], map: "communityUser_idx")
-  @@index([community], map: "communityMembersCommunity_idx")
-}
-
-model postTypes {
-  id          Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  title       String    @db.VarChar(45)
-  description String?   @db.VarChar(125)
-  structure   Json
-  createdAt   DateTime? @default(now()) @db.DateTime(0)
-  createdBy   Int       @db.UnsignedInt
-  users       users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postTypeCreatedBy")
-  posts       posts[]
-
-  @@index([createdBy], map: "postTypeCreatedBy_idx")
 }
 
 model posts {
@@ -76,15 +51,15 @@ model posts {
   updatedAt   DateTime?   @default(now()) @db.DateTime(0)
   createdBy   Int         @db.UnsignedInt
   community   Int         @db.UnsignedInt
-  type        Int         @db.UnsignedInt
+  type        String      @db.VarChar(45)
   title       String?     @db.VarChar(125)
   body        String?     @db.VarChar(255)
   image       String?     @db.VarChar(125)
   communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
   users       users       @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
-  postTypes   postTypes   @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postType")
+  posttypes   posttypes   @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postType")
   comments    comments[]
-  postLikes   postLikes[]
+  postlikes   postlikes[]
 
   @@index([community], map: "postCommunity_idx")
   @@index([createdBy], map: "postCreatedBy_idx")
@@ -105,7 +80,19 @@ model comments {
   @@index([post], map: "commentPost_idx")
 }
 
-model postLikes {
+model communitymembers {
+  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt   DateTime?   @default(now()) @db.DateTime(0)
+  community   Int         @db.UnsignedInt
+  user        Int         @db.UnsignedInt
+  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityMembersCommunity")
+  users       users       @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityUser")
+
+  @@index([community], map: "communityMembersCommunity_idx")
+  @@index([user], map: "communityUser_idx")
+}
+
+model postlikes {
   id        Int       @id
   createdAt DateTime? @default(now()) @db.DateTime(0)
   userId    Int       @db.UnsignedInt
@@ -115,4 +102,17 @@ model postLikes {
 
   @@index([postId], map: "postLikePost_idx")
   @@index([userId], map: "postLikeUser_idx")
+}
+
+model posttypes {
+  id          String    @unique(map: "id_UNIQUE") @db.VarChar(45)
+  title       String    @db.VarChar(45)
+  description String?   @db.VarChar(125)
+  structure   Json
+  createdAt   DateTime? @default(now()) @db.DateTime(0)
+  createdBy   Int       @db.UnsignedInt
+  users       users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postTypeCreatedBy")
+  posts       posts[]
+
+  @@index([createdBy], map: "postTypeCreatedBy_idx")
 }

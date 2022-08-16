@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
@@ -22,7 +23,17 @@ export class PostTypesService {
 
     if (!user) throw new NotFoundException('No user found');
 
-    const postType = await this.prisma.postTypes.create({ data });
+    const existingPostType = await this.prisma.posttypes.findUnique({
+      where: { id: data.id }
+    });
+
+    if (existingPostType) {
+      throw new ConflictException('Post type with this id already exists');
+    }
+
+    const postType = await this.prisma.posttypes.create({
+      data: data
+    });
 
     if (!postType) throw new BadRequestException('Failed to create post type');
 
@@ -30,7 +41,7 @@ export class PostTypesService {
   }
 
   async getPostTypes() {
-    const postTypes = await this.prisma.postTypes.findMany({ where: {} });
+    const postTypes = await this.prisma.posttypes.findMany({ where: {} });
 
     if (!postTypes || !postTypes.length) {
       throw new NotFoundException('No post types found');
@@ -40,7 +51,7 @@ export class PostTypesService {
   }
 
   async findMany(query) {
-    const posts = await this.prisma.postTypes.findMany({
+    const posts = await this.prisma.posttypes.findMany({
       where: query
     });
 
@@ -52,7 +63,7 @@ export class PostTypesService {
   }
 
   async updateOne(query, data: UpdatePostTypeDto) {
-    const post = await this.prisma.postTypes.update({
+    const post = await this.prisma.posttypes.update({
       where: query,
       data
     });
@@ -63,7 +74,7 @@ export class PostTypesService {
   }
 
   async deleteOne(query) {
-    const post = await this.prisma.postTypes.delete({ where: query });
+    const post = await this.prisma.posttypes.delete({ where: query });
 
     if (!post) throw new BadRequestException('Failed to delete post');
 
@@ -71,7 +82,7 @@ export class PostTypesService {
   }
 
   async findUnique(query) {
-    const post = await this.prisma.postTypes.findUnique({
+    const post = await this.prisma.posttypes.findUnique({
       where: query
     });
 
@@ -81,30 +92,30 @@ export class PostTypesService {
   }
 
   async _update(query, data: UpdatePostTypeDto) {
-    return await this.prisma.postTypes.update({ where: query, data });
+    return await this.prisma.posttypes.update({ where: query, data });
   }
 
   async _updateMany(query, data: UpdatePostTypeDto) {
-    return await this.prisma.postTypes.updateMany({ where: query, data });
+    return await this.prisma.posttypes.updateMany({ where: query, data });
   }
 
   async _delete(query) {
-    return await this.prisma.postTypes.delete({ where: query });
+    return await this.prisma.posttypes.delete({ where: query });
   }
 
   async _deleteMany(query) {
-    return await this.prisma.postTypes.deleteMany({ where: query });
+    return await this.prisma.posttypes.deleteMany({ where: query });
   }
 
   async _findMany(query) {
-    return await this.prisma.postTypes.findMany({ where: query });
+    return await this.prisma.posttypes.findMany({ where: query });
   }
 
   async _findFirst(query) {
-    return await this.prisma.postTypes.findFirst({ where: query });
+    return await this.prisma.posttypes.findFirst({ where: query });
   }
 
   async _findUnique(query) {
-    return await this.prisma.postTypes.findUnique({ where: query });
+    return await this.prisma.posttypes.findUnique({ where: query });
   }
 }

@@ -30,7 +30,7 @@ export class PostsService {
       throw new NotFoundException('No community found');
     }
 
-    const postType = await this.prisma.postTypes.findFirst({
+    const postType = await this.prisma.posttypes.findFirst({
       where: {
         id: data.type
       }

@@ -10,6 +10,11 @@ export class CreatePostTypeDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 45)
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(2, 45)
   title: string;
 
   @IsString()

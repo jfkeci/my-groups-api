@@ -12,8 +12,6 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  console.log(process.env.VUE_APP_URL);
-
   app.enableCors({
     origin: process.env.VUE_APP_URL
   });

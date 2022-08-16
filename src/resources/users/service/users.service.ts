@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   async getUserCommunities(userId: number) {
-    const communities = await this.prisma.communityMembers.findMany({
+    const communities = await this.prisma.communitymembers.findMany({
       where: { user: userId },
       include: {
         communities: {
@@ -70,7 +70,7 @@ export class UsersService {
     communityId: number,
     createdBy: boolean
   ) {
-    const memberships = await this.prisma.communityMembers.findMany({
+    const memberships = await this.prisma.communitymembers.findMany({
       where: { user: userId },
       include: { communities: { select: { id: true } } }
     });
@@ -99,7 +99,7 @@ export class UsersService {
   }
 
   async getUserPostsForAllCommunities(userId: number, createdBy: boolean) {
-    const memberships = await this.prisma.communityMembers.findMany({
+    const memberships = await this.prisma.communitymembers.findMany({
       where: { user: userId },
       include: { communities: { select: { id: true } } }
     });
@@ -107,12 +107,6 @@ export class UsersService {
     if (!memberships) {
       throw new NotFoundException('No communities that user belongs to found');
     }
-
-    console.log({
-      where: {
-        AND: memberships.map((m) => ({ community: m.communities.id }))
-      }
-    });
 
     const posts = await this.prisma.posts.findMany({
       where: {
