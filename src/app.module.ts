@@ -8,7 +8,6 @@ import { CommentsModule } from './resources/comments/comments.module';
 import { PrismaModule } from './utilities/prisma/prisma.module';
 import { routerConfig } from './utilities/config/router.config';
 import { loggerConfig } from './utilities/config/logger.config';
-import { AssetsModule } from './utilities/static/assets.module';
 import validation from './utilities/config/validation.config';
 import { PostsModule } from './resources/posts/posts.module';
 import { UsersModule } from './resources/users/users.module';

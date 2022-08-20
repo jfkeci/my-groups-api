@@ -5,7 +5,8 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  HttpCode
 } from '@nestjs/common';
 import { PostsService } from '../service/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -22,6 +23,7 @@ export class PostsController {
   }
 
   @Post()
+  @HttpCode(201)
   create(@Body() data: CreatePostDto) {
     return this.postService.createOne(data);
   }

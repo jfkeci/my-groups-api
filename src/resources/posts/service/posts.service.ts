@@ -16,6 +16,8 @@ export class PostsService {
   ) {}
 
   async createOne(data: CreatePostDto) {
+    this.validatePostType(data);
+
     const user = await this.userService._findUnique({
       id: Number(data.createdBy)
     });
@@ -45,6 +47,62 @@ export class PostsService {
     if (!post) throw new BadRequestException('Failed to create post');
 
     return post;
+  }
+
+  validatePostType(data: CreatePostDto) {
+    if (data.type == 'event') {
+      //
+    }
+
+    if (data.type == 'poll') {
+      if (!data.structure.options) {
+        throw new BadRequestException('Missing poll options');
+      }
+
+      if (!data.structure.options.length) {
+        throw new BadRequestException('Missing poll options');
+      }
+
+      if (data.structure.options.length < 2) {
+        throw new BadRequestException('Poll needs at least two options');
+      }
+
+      for (const option of data.structure.options) {
+        if (!option.id) {
+          throw new BadRequestException('Mission option id');
+        }
+
+        if (!option.title) {
+          throw new BadRequestException('Missing option title');
+        }
+
+        if (!(option.users instanceof Array)) {
+          throw new BadRequestException(
+            'Option users property must be an array'
+          );
+        }
+
+        let filtered = data.structure.options.filter((o) => o.id == option.id);
+
+        if (filtered.length > 1) {
+          throw new BadRequestException('Option ids must be unique');
+        }
+
+        filtered = data.structure.options.filter(
+          (o) => o.title == option.title
+        );
+
+        if (filtered.length > 1) {
+          throw new BadRequestException('Option title must be unique');
+        }
+      }
+    }
+
+    if (data.type == 'info') {
+      if (data.structure != {}) {
+        throw new BadRequestException('Invalid info post structure');
+      }
+    }
   }
 
   async findMany(query) {

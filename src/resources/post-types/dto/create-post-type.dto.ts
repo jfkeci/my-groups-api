@@ -22,10 +22,6 @@ export class CreatePostTypeDto {
   @Length(2, 125)
   description?: string;
 
-  @IsNumber()
-  @IsNotEmpty()
-  createdBy: number;
-
   @IsNotEmpty()
   structure: any;
 }

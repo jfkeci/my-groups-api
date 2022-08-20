@@ -2,27 +2,41 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException
+  NotFoundException,
+  OnModuleInit
 } from '@nestjs/common';
 import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
+import { defaultPostTypes } from '../default-type-structure';
 import { CreatePostTypeDto } from '../dto/create-post-type.dto';
 import { UpdatePostTypeDto } from '../dto/update-post-type.dto';
 
 @Injectable()
-export class PostTypesService {
+export class PostTypesService implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UsersService
   ) {}
 
+  async onModuleInit() {
+    await this.createDefaultPostTypes();
+  }
+
+  async createDefaultPostTypes() {
+    for (const postType of defaultPostTypes) {
+      const existingPostType = await this.prisma.posttypes.findUnique({
+        where: { id: postType.id }
+      });
+
+      if (!existingPostType) {
+        await this.prisma.posttypes.create({
+          data: { ...postType }
+        });
+      }
+    }
+  }
+
   async createOne(data: CreatePostTypeDto) {
-    const user = await this.userService._findUnique({
-      id: Number(data.createdBy)
-    });
-
-    if (!user) throw new NotFoundException('No user found');
-
     const existingPostType = await this.prisma.posttypes.findUnique({
       where: { id: data.id }
     });

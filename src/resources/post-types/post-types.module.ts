@@ -7,6 +7,6 @@ import { UsersModule } from '../users/users.module';
 @Module({
   imports: [PrismaModule, UsersModule],
   controllers: [PostTypesController],
-  providers: [PostTypesService],
+  providers: [PostTypesService]
 })
 export class PostTypesModule {}

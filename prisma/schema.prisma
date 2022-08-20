@@ -27,7 +27,6 @@ model users {
   communitymembers       communitymembers[]
   postlikes              postlikes[]
   posts                  posts[]
-  posttypes              posttypes[]
 }
 
 model communities {
@@ -55,6 +54,7 @@ model posts {
   title       String?     @db.VarChar(125)
   body        String?     @db.VarChar(255)
   image       String?     @db.VarChar(125)
+  structure   Json
   communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
   users       users       @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
   posttypes   posttypes   @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postType")
@@ -110,9 +110,5 @@ model posttypes {
   description String?   @db.VarChar(125)
   structure   Json
   createdAt   DateTime? @default(now()) @db.DateTime(0)
-  createdBy   Int       @db.UnsignedInt
-  users       users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postTypeCreatedBy")
   posts       posts[]
-
-  @@index([createdBy], map: "postTypeCreatedBy_idx")
 }

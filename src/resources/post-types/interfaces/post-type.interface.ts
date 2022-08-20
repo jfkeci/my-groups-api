@@ -1,20 +1,18 @@
-export interface EventPostStructure {
+export type EventPostStructure = {
   location: number[];
   date: string;
   length: number;
   users: number[];
-}
+};
 
-export interface PollOption {
+export type PollOption = {
   id: number;
   title: string;
   users: number[];
-}
+};
 
-export interface PollPostStructure {
+export type PollPostStructure = {
   options: PollOption[];
-}
+};
 
-export interface InfoPostStructure {
-  type: string;
-}
+export type InfoPostStructure = {};

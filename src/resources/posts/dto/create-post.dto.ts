@@ -1,10 +1,16 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Length
 } from 'class-validator';
+import {
+  EventPostStructure,
+  PollOption,
+  PollPostStructure
+} from 'src/resources/post-types/interfaces/post-type.interface';
 
 export class CreatePostDto {
   @IsString()
@@ -20,7 +26,7 @@ export class CreatePostDto {
   @IsString()
   @IsOptional()
   @Length(2, 125)
-  iamge?: string;
+  image?: string;
 
   @IsNumber()
   @IsNotEmpty()
@@ -33,4 +39,8 @@ export class CreatePostDto {
   @IsString()
   @IsNotEmpty()
   type: string;
+
+  @IsObject()
+  @IsNotEmpty()
+  structure: any;
 }
