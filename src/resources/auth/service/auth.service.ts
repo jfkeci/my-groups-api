@@ -9,12 +9,7 @@ import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
-import {
-  generateJwt,
-  generateToken
-} from 'src/utilities/utils/gen-token.utils';
-import { VerifyEmailDto } from '../dto/verify-email.dto';
-import { sendEmail } from 'src/utilities/utils/mailer.utils';
+import { generateJwt } from 'src/utilities/utils/gen-token.utils';
 
 @Injectable()
 export class AuthService {
