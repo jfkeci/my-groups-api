@@ -17,9 +17,4 @@ export class AuthController {
   loginUser(@Body() data: LoginUserDto) {
     return this.authService.loginUser(data);
   }
-
-  @Get('/verify/:userId/:token')
-  verifyEmail(@Param() params: VerifyEmailDto) {
-    return this.authService.verifyEmail(params);
-  }
 }

@@ -6,11 +6,6 @@ import {
   IsString,
   Length
 } from 'class-validator';
-import {
-  EventPostStructure,
-  PollOption,
-  PollPostStructure
-} from 'src/resources/post-types/interfaces/post-type.interface';
 
 export class CreatePostDto {
   @IsString()

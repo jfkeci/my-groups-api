@@ -1,8 +1,6 @@
 import { CommunityMembersModule } from './resources/community-members/community-members.module';
 import { CommunitiesModule } from './resources/communities/communities.module';
 import { LoggerMiddleware } from './utilities/middlewares/logger.middleware';
-import { PostLikesModule } from './resources/post-likes/post-likes.module';
-import { PostTypesModule } from './resources/post-types/post-types.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CommentsModule } from './resources/comments/comments.module';
 import { PrismaModule } from './utilities/prisma/prisma.module';
@@ -25,8 +23,6 @@ import { WinstonModule } from 'nest-winston';
     PostsModule,
     PrismaModule,
     CommentsModule,
-    PostTypesModule,
-    PostLikesModule,
     CommunitiesModule,
     CommunityMembersModule,
     RouterModule.register(routerConfig),

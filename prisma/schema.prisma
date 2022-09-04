@@ -8,62 +8,63 @@ datasource db {
 }
 
 model users {
-  id                     Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  createdAt              DateTime?          @default(now()) @db.DateTime(0)
-  updatedAt              DateTime?          @default(now()) @db.DateTime(0)
-  username               String             @unique(map: "username_UNIQUE") @db.VarChar(125)
-  email                  String             @unique(map: "email_UNIQUE") @db.VarChar(125)
-  firstName              String?            @db.VarChar(125)
-  lastName               String?            @db.VarChar(125)
-  birthdate              DateTime?          @db.DateTime(0)
-  role                   String?            @db.VarChar(45)
-  bio                    String?            @db.VarChar(300)
-  image                  String?            @db.VarChar(125)
-  emailVerificationToken String?            @db.VarChar(125)
-  isEmailVerified        Boolean            @default(false)
-  password               String             @db.VarChar(255)
-  comments               comments[]
-  communities            communities[]
-  communitymembers       communitymembers[]
-  postlikes              postlikes[]
-  posts                  posts[]
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt         DateTime?           @default(now()) @db.DateTime(0)
+  updatedAt         DateTime?           @default(now()) @db.DateTime(0)
+  username          String              @unique(map: "username_UNIQUE") @db.VarChar(125)
+  email             String              @unique(map: "email_UNIQUE") @db.VarChar(125)
+  firstName         String?             @db.VarChar(125)
+  lastName          String?             @db.VarChar(125)
+  birthdate         DateTime?           @db.DateTime(0)
+  bio               String?             @db.VarChar(300)
+  image             String?             @db.VarChar(125)
+  password          String              @db.VarChar(255)
+  isAdmin           Boolean?            @default(false)
+  comments          comments[]
+  communities       communities[]
+  community_admins  community_admins[]
+  community_members community_members[]
+  event_users       event_users[]
+  poll_option_votes poll_option_votes[]
+  posts             posts[]
 }
 
 model communities {
-  id               Int                @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  createdAt        DateTime?          @default(now()) @db.DateTime(0)
-  updatedAt        DateTime?          @default(now()) @db.DateTime(0)
-  title            String             @db.VarChar(125)
-  description      String?            @db.VarChar(255)
-  image            String?            @db.VarChar(125)
-  createdBy        Int                @db.UnsignedInt
-  users            users              @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "communityCreatedBy")
-  communitymembers communitymembers[]
-  posts            posts[]
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt         DateTime?           @default(now()) @db.DateTime(0)
+  updatedAt         DateTime?           @default(now()) @db.DateTime(0)
+  title             String              @db.VarChar(125)
+  description       String?             @db.VarChar(255)
+  image             String?             @db.VarChar(125)
+  createdBy         Int                 @db.UnsignedInt
+  users             users               @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "community_created_by_user")
+  community_admins  community_admins[]
+  community_members community_members[]
+  posts             posts[]
 
   @@index([createdBy], map: "communityCreatedBy_idx")
 }
 
 model posts {
-  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  createdAt   DateTime?   @default(now()) @db.DateTime(0)
-  updatedAt   DateTime?   @default(now()) @db.DateTime(0)
-  createdBy   Int         @db.UnsignedInt
-  community   Int         @db.UnsignedInt
-  type        String      @db.VarChar(45)
-  title       String?     @db.VarChar(125)
-  body        String?     @db.VarChar(255)
-  image       String?     @db.VarChar(125)
-  structure   Json
-  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
-  users       users       @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
-  posttypes   posttypes   @relation(fields: [type], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postType")
-  comments    comments[]
-  postlikes   postlikes[]
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  createdAt         DateTime?           @default(now()) @db.DateTime(0)
+  updatedAt         DateTime?           @default(now()) @db.DateTime(0)
+  createdBy         Int                 @db.UnsignedInt
+  community         Int                 @db.UnsignedInt
+  title             String?             @db.VarChar(125)
+  body              String?             @db.VarChar(255)
+  image             String?             @db.VarChar(125)
+  type              String              @db.VarChar(10)
+  date              DateTime?           @db.DateTime(0)
+  communities       communities         @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
+  users             users               @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
+  comments          comments[]
+  event_users       event_users[]
+  poll_option_votes poll_option_votes[]
+  poll_options      poll_options[]
 
   @@index([community], map: "postCommunity_idx")
   @@index([createdBy], map: "postCreatedBy_idx")
-  @@index([type], map: "postType")
 }
 
 model comments {
@@ -73,14 +74,14 @@ model comments {
   createdBy Int       @db.UnsignedInt
   post      Int       @db.UnsignedInt
   text      String    @db.VarChar(255)
-  users     users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "commentCreatedBy")
-  posts     posts     @relation(fields: [post], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "commentPost")
+  users     users     @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_created_by")
+  posts     posts     @relation(fields: [post], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_from_post")
 
   @@index([createdBy], map: "commentCreatedBy_idx")
   @@index([post], map: "commentPost_idx")
 }
 
-model communitymembers {
+model community_members {
   id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   createdAt   DateTime?   @default(now()) @db.DateTime(0)
   community   Int         @db.UnsignedInt
@@ -92,23 +93,52 @@ model communitymembers {
   @@index([user], map: "communityUser_idx")
 }
 
-model postlikes {
-  id        Int       @id
-  createdAt DateTime? @default(now()) @db.DateTime(0)
-  userId    Int       @db.UnsignedInt
-  postId    Int       @db.UnsignedInt
-  posts     posts     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postLikePost")
-  users     users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postLikeUser")
+model event_users {
+  id        Int      @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  event     Int      @db.UnsignedInt
+  user      Int      @db.UnsignedInt
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  posts     posts    @relation(fields: [event], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_post")
+  users     users    @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_user")
 
-  @@index([postId], map: "postLikePost_idx")
-  @@index([userId], map: "postLikeUser_idx")
+  @@index([user], map: "event_user_idx")
+  @@index([event], map: "event_post_idx")
 }
 
-model posttypes {
-  id          String    @unique(map: "id_UNIQUE") @db.VarChar(45)
-  title       String    @db.VarChar(45)
-  description String?   @db.VarChar(125)
-  structure   Json
-  createdAt   DateTime? @default(now()) @db.DateTime(0)
-  posts       posts[]
+model poll_option_votes {
+  id           Int          @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  poll         Int          @db.UnsignedInt
+  option       Int          @db.UnsignedInt
+  user         Int          @db.UnsignedInt
+  createdAt    DateTime     @default(now()) @db.DateTime(0)
+  poll_options poll_options @relation(fields: [option], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "poll_option_vote_option")
+  posts        posts        @relation(fields: [poll], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "poll_option_vote_poll")
+  users        users        @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "poll_option_vote_user")
+
+  @@index([option], map: "poll_option_vote_option_idx")
+  @@index([poll], map: "poll_option_vote_poll_idx")
+  @@index([user], map: "poll_option_vote_user_idx")
+}
+
+model poll_options {
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  poll              Int                 @db.UnsignedInt
+  option            String              @db.VarChar(125)
+  createdAt         DateTime            @default(now()) @db.DateTime(0)
+  posts             posts               @relation(fields: [poll], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "poll_option")
+  poll_option_votes poll_option_votes[]
+
+  @@index([poll], map: "poll_option_idx")
+}
+
+model community_admins {
+  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  community   Int         @db.UnsignedInt
+  user        Int         @db.UnsignedInt
+  createdAt   DateTime    @default(now()) @db.DateTime(0)
+  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "administrated_community")
+  users       users       @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "community_user_admin")
+
+  @@index([community], map: "administrated_community_idx")
+  @@index([user], map: "community_admin_admin_idx")
 }

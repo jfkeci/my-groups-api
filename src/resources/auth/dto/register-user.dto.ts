@@ -1,6 +1,8 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Length
@@ -50,4 +52,12 @@ export class RegisterUserDto {
   @IsString()
   @IsOptional()
   image?: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isAdmin: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  adminVaucher?: number;
 }

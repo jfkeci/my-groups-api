@@ -23,6 +23,22 @@ export class AuthService {
   async registerUser(data: RegisterUserDto) {
     delete data.confirmPassword;
 
+    if (data.isAdmin) {
+      if (!data.adminVaucher) {
+        throw new BadRequestException(
+          'Only super admin can create an admin user'
+        );
+      }
+
+      const admin = await this.prisma.users.findUnique({
+        where: { id: data.adminVaucher }
+      });
+
+      if (!admin) {
+        throw new NotFoundException('No admin found');
+      }
+    }
+
     const users = await this.prisma.users.findMany({
       where: {
         OR: [{ username: data.username }, { email: data.email }]
@@ -39,46 +55,24 @@ export class AuthService {
 
     data.password = await bcrypt.hash(data.password, 10);
 
-    const token = generateToken();
-
     const newUser = await this.prisma.users.create({
       data: {
-        ...data,
-        emailVerificationToken:
-          process.env.NODE_ENV == 'development' ? '' : token,
-        isEmailVerified: process.env.NODE_ENV == 'development' ? true : false
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        birthdate: data?.birthdate,
+        image: data?.image,
+        bio: data?.bio
       }
     });
 
     if (!newUser) throw new BadRequestException('Failed to create user');
 
-    let emailConfirmationUrl;
-
-    if (process.env.NODE_ENV != 'development') {
-      const emailConfirmationUrl = `${process.env.BASE_URL}/api/auth/verify/${newUser.id}/${token}`;
-
-      await sendEmail({
-        from: 'my-groups@info.com',
-        to: newUser.email,
-        subject: 'Verify your email',
-        html: `<html>
-        <h1>Email verification</h1>
-        <br><hr><br>
-        <h3>
-        <a href="${emailConfirmationUrl}">
-        Verify email
-        </a>
-        </h3>
-        <br><br>
-        </html>`
-      });
-    }
-
     return {
       ...newUser,
       password: null,
-      emailVerificationToken: null,
-      verifyEmailUrl: emailConfirmationUrl ?? '',
       token: await generateJwt(
         { id: newUser.id, username: newUser.username },
         process.env.TOKEN_SECRET
@@ -105,10 +99,6 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('No user found');
 
-    if (!user.isEmailVerified) {
-      throw new ConflictException('User not verified');
-    }
-
     if (await bcrypt.compare(data.password, user.password)) {
       return {
         ...user,
@@ -121,25 +111,5 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Not authorised');
     }
-  }
-
-  async verifyEmail(data: VerifyEmailDto) {
-    const user = await this.prisma.users.findFirst({
-      where: {
-        id: Number(data.userId),
-        emailVerificationToken: data.token
-      }
-    });
-
-    if (!user) throw new NotFoundException('No user found');
-
-    const updatedUser = await this.prisma.users.update({
-      where: { id: Number(data.userId) },
-      data: { emailVerificationToken: '', isEmailVerified: true }
-    });
-
-    if (!updatedUser) throw new BadRequestException('Failed to update user');
-
-    return updatedUser;
   }
 }

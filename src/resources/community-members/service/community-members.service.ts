@@ -20,7 +20,7 @@ export class CommunityMembersService {
 
     if (!community) throw new NotFoundException('No community found');
 
-    const membership = await this.prisma.communitymembers.create({
+    const membership = await this.prisma.community_members.create({
       data: {
         user: userId,
         community: communityId
@@ -38,7 +38,7 @@ export class CommunityMembersService {
     const community = await this.prisma.communities.findUnique({
       where: { id: communityId },
       include: {
-        communitymembers: {
+        community_members: {
           include: {
             users: {
               select: {
@@ -62,7 +62,7 @@ export class CommunityMembersService {
   }
 
   async removeMemberFromCommunity(userId: number, communityId: number) {
-    const membership = await this.prisma.communitymembers.findFirst({
+    const membership = await this.prisma.community_members.findFirst({
       where: {
         user: userId,
         community: communityId
@@ -73,7 +73,7 @@ export class CommunityMembersService {
       throw new NotFoundException('User is not a member of this community');
     }
 
-    await this.prisma.communitymembers.delete({
+    await this.prisma.community_members.delete({
       where: { id: membership.id }
     });
   }

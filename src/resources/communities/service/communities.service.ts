@@ -26,7 +26,7 @@ export class CommunitiesService {
 
     if (!community) throw new BadRequestException('Failed to create community');
 
-    await this.prisma.communitymembers.create({
+    await this.prisma.community_members.create({
       data: {
         community: community.id,
         user: data.createdBy
@@ -71,7 +71,7 @@ export class CommunitiesService {
     const community = await this.prisma.communities.findUnique({
       where: { id: communityId },
       include: {
-        communitymembers: {
+        community_members: {
           include: {
             users: {
               select: {

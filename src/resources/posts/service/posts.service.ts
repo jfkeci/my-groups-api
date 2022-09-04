@@ -32,16 +32,6 @@ export class PostsService {
       throw new NotFoundException('No community found');
     }
 
-    const postType = await this.prisma.posttypes.findFirst({
-      where: {
-        id: data.type
-      }
-    });
-
-    if (!postType) {
-      throw new NotFoundException('No post type found for ' + data.type);
-    }
-
     const post = await this.prisma.posts.create({ data });
 
     if (!post) throw new BadRequestException('Failed to create post');
