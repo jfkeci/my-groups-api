@@ -59,5 +59,5 @@ export class RegisterUserDto {
 
   @IsNumber()
   @IsOptional()
-  adminVaucher?: number;
+  adminVoucher?: number;
 }

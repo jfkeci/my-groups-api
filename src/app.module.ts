@@ -15,6 +15,8 @@ import { APP_GUARD, RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
+import { PollOptionsModule } from './poll-options/poll-options.module';
+import { PollOptionVotesModule } from './poll-option-votes/poll-option-votes.module';
 
 @Module({
   imports: [
@@ -37,7 +39,9 @@ import { WinstonModule } from 'nest-winston';
         maxFiles: process.env.LOG_MAX_FILES,
         maxSize: process.env.LOG_MAX_FILE_SIZE
       })
-    )
+    ),
+    PollOptionsModule,
+    PollOptionVotesModule
   ],
   providers: [
     /* {

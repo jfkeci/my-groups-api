@@ -19,18 +19,22 @@ export class AuthService {
     delete data.confirmPassword;
 
     if (data.isAdmin) {
-      if (!data.adminVaucher) {
+      if (!data.adminVoucher) {
         throw new BadRequestException(
           'Only super admin can create an admin user'
         );
       }
 
       const admin = await this.prisma.users.findUnique({
-        where: { id: data.adminVaucher }
+        where: { id: data.adminVoucher }
       });
 
       if (!admin) {
         throw new NotFoundException('No admin found');
+      }
+
+      if (!admin.isAdmin) {
+        throw new ConflictException('Vaucher user is not an admin');
       }
     }
 
@@ -59,7 +63,8 @@ export class AuthService {
         lastName: data.lastName,
         birthdate: data?.birthdate,
         image: data?.image,
-        bio: data?.bio
+        bio: data?.bio,
+        isAdmin: data?.isAdmin
       }
     });
 
