@@ -8,6 +8,12 @@ import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 
+export enum PostTypes {
+  INFO = 'info',
+  EVENT = 'event',
+  POLL = 'poll'
+}
+
 @Injectable()
 export class PostsService {
   constructor(
@@ -16,7 +22,11 @@ export class PostsService {
   ) {}
 
   async createOne(data: CreatePostDto) {
-    this.validatePostType(data);
+    if (data.type == PostTypes.POLL) {
+      if (!data.options || !data.options.length) {
+        throw new BadRequestException('Mission poll post options');
+      }
+    }
 
     const user = await this.userService._findUnique({
       id: Number(data.createdBy)
@@ -32,67 +42,29 @@ export class PostsService {
       throw new NotFoundException('No community found');
     }
 
-    const post = await this.prisma.posts.create({ data });
+    const post = await this.prisma.posts.create({
+      data: {
+        createdBy: data.createdBy,
+        community: data.community,
+        title: data.title,
+        type: data.type,
+        image: data?.image ?? null,
+        body: data?.body ?? null,
+        date: data?.date ?? null
+      }
+    });
 
     if (!post) throw new BadRequestException('Failed to create post');
 
+    const options = await this.prisma.poll_options.createMany({
+      data: data.options
+    });
+
+    if (!options) {
+      throw new BadRequestException('Failed to create poll options');
+    }
+
     return post;
-  }
-
-  validatePostType(data: CreatePostDto) {
-    if (data.type == 'event') {
-      //
-    }
-
-    if (data.type == 'poll') {
-      if (!data.structure.options) {
-        throw new BadRequestException('Missing poll options');
-      }
-
-      if (!data.structure.options.length) {
-        throw new BadRequestException('Missing poll options');
-      }
-
-      if (data.structure.options.length < 2) {
-        throw new BadRequestException('Poll needs at least two options');
-      }
-
-      for (const option of data.structure.options) {
-        if (!option.id) {
-          throw new BadRequestException('Mission option id');
-        }
-
-        if (!option.title) {
-          throw new BadRequestException('Missing option title');
-        }
-
-        if (!(option.users instanceof Array)) {
-          throw new BadRequestException(
-            'Option users property must be an array'
-          );
-        }
-
-        let filtered = data.structure.options.filter((o) => o.id == option.id);
-
-        if (filtered.length > 1) {
-          throw new BadRequestException('Option ids must be unique');
-        }
-
-        filtered = data.structure.options.filter(
-          (o) => o.title == option.title
-        );
-
-        if (filtered.length > 1) {
-          throw new BadRequestException('Option title must be unique');
-        }
-      }
-    }
-
-    if (data.type == 'info') {
-      if (data.structure != {}) {
-        throw new BadRequestException('Invalid info post structure');
-      }
-    }
   }
 
   async findMany(query) {

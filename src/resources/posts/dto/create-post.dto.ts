@@ -1,11 +1,19 @@
+import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
-  Length
+  Length,
+  ValidateNested
 } from 'class-validator';
+import { OptionDto } from 'src/poll-options/dto/create-options.dto';
+import { PostTypes } from '../service/posts.service';
 
 export class CreatePostDto {
   @IsString()
@@ -31,11 +39,23 @@ export class CreatePostDto {
   @IsNotEmpty()
   community: number;
 
-  @IsString()
+  @IsEnum(PostTypes, {
+    message: `Type can only be of values ${JSON.stringify(
+      Object.keys(PostTypes)
+    )}`
+  })
   @IsNotEmpty()
   type: string;
 
-  @IsObject()
-  @IsNotEmpty()
-  structure: any;
+  @IsDateString()
+  @IsOptional()
+  date?: string;
+
+  @ValidateNested({ each: true })
+  @Type(() => OptionDto)
+  @ArrayMinSize(2)
+  @ArrayMaxSize(9)
+  @IsArray()
+  @IsOptional()
+  options?: OptionDto[];
 }
