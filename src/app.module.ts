@@ -18,6 +18,7 @@ import { WinstonModule } from 'nest-winston';
 import { PollOptionsModule } from './resources/poll-options/poll-options.module';
 import { PollOptionVotesModule } from './resources/poll-option-votes/poll-option-votes.module';
 import { EventUsersModule } from './resources/event-users/event-users.module';
+import { CommunityUsersModule } from './community-users/community-users.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { EventUsersModule } from './resources/event-users/event-users.module';
     ),
     PollOptionsModule,
     PollOptionVotesModule,
-    EventUsersModule
+    EventUsersModule,
+    CommunityUsersModule
   ],
   providers: [
     /* {
