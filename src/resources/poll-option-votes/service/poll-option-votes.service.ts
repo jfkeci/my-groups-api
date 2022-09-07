@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
@@ -24,6 +25,18 @@ export class PollOptionVotesService {
 
     if (!poll) {
       throw new NotFoundException('No poll found');
+    }
+
+    const existingVote = await this.prisma.poll_option_votes.findFirst({
+      where: {
+        poll: data.pollId,
+        user: data.userId,
+        option: data.optionId
+      }
+    });
+
+    if (existingVote) {
+      throw new ConflictException('User already voted for this option');
     }
 
     const vote = await this.prisma.poll_option_votes.create({
