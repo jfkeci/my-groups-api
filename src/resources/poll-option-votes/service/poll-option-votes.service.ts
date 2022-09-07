@@ -18,6 +18,14 @@ export class PollOptionVotesService {
 
     if (!user) throw new NotFoundException('No user found');
 
+    const poll = await this.prisma.posts.findUnique({
+      where: { id: data.pollId }
+    });
+
+    if (!poll) {
+      throw new NotFoundException('No poll found');
+    }
+
     const vote = await this.prisma.poll_option_votes.create({
       data: {
         poll: data.pollId,
