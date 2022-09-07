@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
+import { hasUniqueProperties } from 'src/utilities/utils/unique-array-util';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 
@@ -25,6 +26,10 @@ export class PostsService {
     if (data.type == PostTypes.POLL) {
       if (!data.options || !data.options.length) {
         throw new BadRequestException('Mission poll post options');
+      }
+
+      if (!hasUniqueProperties(data.options, 'option')) {
+        throw new BadRequestException('Options must be unique');
       }
     }
 
@@ -57,7 +62,7 @@ export class PostsService {
     if (!post) throw new BadRequestException('Failed to create post');
 
     const options = await this.prisma.poll_options.createMany({
-      data: data.options
+      data: data.options.map((o) => ({ option: o.option, poll: post.id }))
     });
 
     if (!options) {

@@ -12,7 +12,7 @@ import {
   Length,
   ValidateNested
 } from 'class-validator';
-import { OptionDto } from 'src/poll-options/dto/create-options.dto';
+import { OptionDto } from 'src/resources/poll-options/dto/create-options.dto';
 import { PostTypes } from '../service/posts.service';
 
 export class CreatePostDto {

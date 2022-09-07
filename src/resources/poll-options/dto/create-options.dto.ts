@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsNumber,
   IsString,
   ArrayMaxSize,
   ArrayMinSize,
@@ -11,9 +10,6 @@ import {
 export class OptionDto {
   @IsString()
   option: string;
-
-  @IsNumber()
-  poll: number;
 }
 
 export class CreatePostDto {

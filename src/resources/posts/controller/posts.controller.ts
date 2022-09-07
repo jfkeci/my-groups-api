@@ -22,8 +22,8 @@ export class PostsController {
     return this.postService.findUnique({ id: Number(params.postId) });
   }
 
-  @Post()
   @HttpCode(201)
+  @Post()
   create(@Body() data: CreatePostDto) {
     return this.postService.createOne(data);
   }

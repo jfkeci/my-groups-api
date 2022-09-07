@@ -15,8 +15,9 @@ import { APP_GUARD, RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import { PollOptionsModule } from './poll-options/poll-options.module';
-import { PollOptionVotesModule } from './poll-option-votes/poll-option-votes.module';
+import { PollOptionsModule } from './resources/poll-options/poll-options.module';
+import { PollOptionVotesModule } from './resources/poll-option-votes/poll-option-votes.module';
+import { EventUsersModule } from './resources/event-users/event-users.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { PollOptionVotesModule } from './poll-option-votes/poll-option-votes.mod
       })
     ),
     PollOptionsModule,
-    PollOptionVotesModule
+    PollOptionVotesModule,
+    EventUsersModule
   ],
   providers: [
     /* {

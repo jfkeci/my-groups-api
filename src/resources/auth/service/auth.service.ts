@@ -16,8 +16,6 @@ export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
   async registerUser(data: RegisterUserDto) {
-    delete data.confirmPassword;
-
     if (data.isAdmin) {
       if (!data.adminVoucher) {
         throw new BadRequestException(
