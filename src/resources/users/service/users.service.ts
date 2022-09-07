@@ -85,9 +85,29 @@ export class UsersService {
       postsQuery.push({ createdBy: userId });
     }
 
+    const userSelectFields = {
+      id: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      image: true
+    };
+
     const posts = await this.prisma.posts.findMany({
       where: {
         AND: postsQuery
+      },
+      include: {
+        comments: { include: { users: { select: userSelectFields } } },
+        users: { select: userSelectFields },
+        poll_options: {
+          include: {
+            poll_option_votes: {
+              include: { users: { select: userSelectFields } }
+            }
+          }
+        },
+        event_users: { include: { users: { select: userSelectFields } } }
       }
     });
 
@@ -108,9 +128,29 @@ export class UsersService {
       throw new NotFoundException('No communities that user belongs to found');
     }
 
+    const userSelectFields = {
+      id: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      image: true
+    };
+
     const posts = await this.prisma.posts.findMany({
       where: {
         AND: memberships.map((m) => ({ community: m.communities.id }))
+      },
+      include: {
+        comments: { include: { users: { select: userSelectFields } } },
+        users: { select: userSelectFields },
+        poll_options: {
+          include: {
+            poll_option_votes: {
+              include: { users: { select: userSelectFields } }
+            }
+          }
+        },
+        event_users: { include: { users: { select: userSelectFields } } }
       }
     });
 
