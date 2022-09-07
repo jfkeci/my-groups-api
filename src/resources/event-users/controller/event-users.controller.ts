@@ -9,13 +9,13 @@ export class EventUsersController {
 
   @HttpCode(200)
   @Post()
-  addVoteToOption(@Body() body: AddUserToEventDto) {
+  addUserToEvent(@Body() body: AddUserToEventDto) {
     return this.eventUsersService.addUserToEvent(body);
   }
 
   @HttpCode(200)
   @Delete()
-  removeVoteFromOption(@Body() body: RemoveUserFromEventDto) {
+  removeEventUser(@Body() body: RemoveUserFromEventDto) {
     return this.eventUsersService.removeEventUser(body);
   }
 }
