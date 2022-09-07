@@ -3,7 +3,10 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { UsersService } from 'src/resources/users/service/users.service';
+import {
+  userSelectFields,
+  UsersService
+} from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { hasUniqueProperties } from 'src/utilities/utils/unique-array-util';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -33,6 +36,12 @@ export class PostsService {
       }
     }
 
+    if (data.type == PostTypes.EVENT) {
+      if (!data.date) {
+        throw new BadRequestException('Event needs date and time');
+      }
+    }
+
     const user = await this.userService._findUnique({
       id: Number(data.createdBy)
     });
@@ -45,6 +54,17 @@ export class PostsService {
 
     if (!community) {
       throw new NotFoundException('No community found');
+    }
+
+    const communityMember = await this.prisma.community_members.findFirst({
+      where: {
+        user: data.createdBy,
+        community: data.community
+      }
+    });
+
+    if (!communityMember) {
+      throw new NotFoundException('User is not a member of this community');
     }
 
     const post = await this.prisma.posts.create({
@@ -61,12 +81,27 @@ export class PostsService {
 
     if (!post) throw new BadRequestException('Failed to create post');
 
-    const options = await this.prisma.poll_options.createMany({
-      data: data.options.map((o) => ({ option: o.option, poll: post.id }))
-    });
+    if (data.type == PostTypes.POLL) {
+      const options = await this.prisma.poll_options.createMany({
+        data: data.options.map((o) => ({ option: o.option, poll: post.id }))
+      });
 
-    if (!options) {
-      throw new BadRequestException('Failed to create poll options');
+      if (!options) {
+        throw new BadRequestException('Failed to create poll options');
+      }
+    }
+
+    if (data.type == PostTypes.EVENT) {
+      const eventUser = await this.prisma.event_users.create({
+        data: {
+          event: post.id,
+          user: data.createdBy
+        }
+      });
+
+      if (!eventUser) {
+        throw new BadRequestException('Failed to add user to event');
+      }
     }
 
     return post;
@@ -105,7 +140,19 @@ export class PostsService {
 
   async findUnique(query) {
     const post = await this.prisma.posts.findUnique({
-      where: query
+      where: query,
+      include: {
+        comments: { include: { users: { select: userSelectFields } } },
+        users: { select: userSelectFields },
+        poll_options: {
+          include: {
+            poll_option_votes: {
+              include: { users: { select: userSelectFields } }
+            }
+          }
+        },
+        event_users: { include: { users: { select: userSelectFields } } }
+      }
     });
 
     if (!post) throw new BadRequestException('No post found');

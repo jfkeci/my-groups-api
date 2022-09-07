@@ -50,6 +50,8 @@ export class PollOptionVotesService {
     if (!vote) {
       throw new BadRequestException('Fauiled to add vote to option');
     }
+
+    return vote;
   }
 
   async removeVoteFromOption(data: RemoveVoteFromOptionDto) {

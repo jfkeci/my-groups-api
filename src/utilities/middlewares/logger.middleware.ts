@@ -8,7 +8,7 @@ export class LoggerMiddleware implements NestMiddleware {
   ) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    const { ip, method, path: url } = req;
+    const { ip, method } = req;
     const userAgent = req.get('user-agent');
 
     res.on('close', () => {
@@ -17,7 +17,7 @@ export class LoggerMiddleware implements NestMiddleware {
 
       this.logger.log(
         'http',
-        `[${ip}-${userAgent}] - [${method}] -> [${url}] [${statusCode}, ${contentLength}]`
+        `[${ip}-${userAgent}] - [${method}] -> [${req.url}] [${statusCode}, ${contentLength}]`
       );
 
       if (method === 'POST' || method === 'PUT' || method === 'PATCH') {

@@ -13,27 +13,28 @@ import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { PostIdParamDto } from 'src/resources/posts/dto/post-params.dto';
 import { CommentIdParamDto } from '../dto/comment-id-param.dto';
 
-@Controller('')
+@Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post()
+  @Post(':postId')
   create(
     @Param() param: PostIdParamDto,
     @Body() createCommentDto: CreateCommentDto
   ) {
+    console.log('HERE');
     return this.commentsService.createPostComment(
       Number(param.postId),
       createCommentDto
     );
   }
 
-  @Get()
+  @Get(':postId')
   getPostComments(@Param() param: PostIdParamDto) {
     return this.commentsService.getPostComments(Number(param.postId));
   }
 
-  @Get(':commentId')
+  @Get(':postId/comment/:commentId')
   getPostComment(@Param() params: CommentIdParamDto) {
     return this.commentsService.getPostComment(
       Number(params.postId),
@@ -41,7 +42,7 @@ export class CommentsController {
     );
   }
 
-  @Patch(':commentId')
+  @Patch(':postId/comment/:commentId')
   updatePostComment(
     @Param() params: CommentIdParamDto,
     @Body() body: UpdateCommentDto
@@ -53,7 +54,7 @@ export class CommentsController {
     );
   }
 
-  @Delete(':commentId')
+  @Delete(':postId/comment/:commentId')
   deletePostComment(@Param() params: CommentIdParamDto) {
     return this.commentsService.deletePostComment(
       Number(params.postId),

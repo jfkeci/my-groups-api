@@ -8,6 +8,14 @@ import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
+export const userSelectFields = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  username: true,
+  image: true
+};
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -85,14 +93,6 @@ export class UsersService {
       postsQuery.push({ createdBy: userId });
     }
 
-    const userSelectFields = {
-      id: true,
-      firstName: true,
-      lastName: true,
-      username: true,
-      image: true
-    };
-
     const posts = await this.prisma.posts.findMany({
       where: {
         AND: postsQuery
@@ -127,14 +127,6 @@ export class UsersService {
     if (!memberships) {
       throw new NotFoundException('No communities that user belongs to found');
     }
-
-    const userSelectFields = {
-      id: true,
-      firstName: true,
-      lastName: true,
-      username: true,
-      image: true
-    };
 
     const posts = await this.prisma.posts.findMany({
       where: {
