@@ -28,17 +28,17 @@ export class PostsService {
   async createOne(data: CreatePostDto) {
     if (data.type == PostTypes.POLL) {
       if (!data.options || !data.options.length) {
-        throw new BadRequestException('Mission poll post options');
+        throw new BadRequestException('MYBbre015');
       }
 
       if (!hasUniqueProperties(data.options, 'option')) {
-        throw new BadRequestException('Options must be unique');
+        throw new BadRequestException('MYBbre016');
       }
     }
 
     if (data.type == PostTypes.EVENT) {
       if (!data.date) {
-        throw new BadRequestException('Event needs date and time');
+        throw new BadRequestException('MYBbre017');
       }
     }
 
@@ -46,14 +46,14 @@ export class PostsService {
       id: Number(data.createdBy)
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     const community = await this.prisma.communities.findFirst({
       where: { id: data.community }
     });
 
     if (!community) {
-      throw new NotFoundException('No community found');
+      throw new NotFoundException('MYBnfe003');
     }
 
     const communityMember = await this.prisma.community_members.findFirst({
@@ -79,7 +79,7 @@ export class PostsService {
       }
     });
 
-    if (!post) throw new BadRequestException('Failed to create post');
+    if (!post) throw new BadRequestException('MYBbre018');
 
     if (data.type == PostTypes.POLL) {
       const options = await this.prisma.poll_options.createMany({
@@ -87,7 +87,7 @@ export class PostsService {
       });
 
       if (!options) {
-        throw new BadRequestException('Failed to create poll options');
+        throw new BadRequestException('MYBbre019');
       }
     }
 
@@ -100,7 +100,7 @@ export class PostsService {
       });
 
       if (!eventUser) {
-        throw new BadRequestException('Failed to add user to event');
+        throw new BadRequestException('MYBbre011');
       }
     }
 
@@ -113,7 +113,7 @@ export class PostsService {
     });
 
     if (!posts || !posts.length) {
-      throw new NotFoundException('No posts found');
+      throw new NotFoundException('MYBnfe015');
     }
 
     return posts;
@@ -125,7 +125,7 @@ export class PostsService {
       data
     });
 
-    if (!post) throw new BadRequestException('Failed to update post');
+    if (!post) throw new BadRequestException('MYBbre020');
 
     return post;
   }
@@ -133,7 +133,7 @@ export class PostsService {
   async deleteOne(query) {
     const post = await this.prisma.posts.delete({ where: query });
 
-    if (!post) throw new BadRequestException('Failed to delete post');
+    if (!post) throw new BadRequestException('MYBbre021');
 
     return post;
   }
@@ -155,7 +155,7 @@ export class PostsService {
       }
     });
 
-    if (!post) throw new BadRequestException('No post found');
+    if (!post) throw new NotFoundException('MYBnfe008');
 
     return post;
   }

@@ -1,5 +1,5 @@
 import {
-  BadGatewayException,
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException
@@ -17,7 +17,7 @@ export class CommunityUsersService {
     });
 
     if (existingMember) {
-      throw new ConflictException('User is already a member of this community');
+      throw new ConflictException('MYBcfe001');
     }
 
     const user = await this.prisma.users.findUnique({
@@ -25,14 +25,14 @@ export class CommunityUsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('No user found');
+      throw new NotFoundException('MYBnfe001');
     }
     const community = await this.prisma.communities.findUnique({
       where: { id: data.community }
     });
 
     if (!community) {
-      throw new NotFoundException('No community found');
+      throw new NotFoundException('MYBnfe003');
     }
 
     const newMember = await this.prisma.community_members.create({
@@ -43,7 +43,7 @@ export class CommunityUsersService {
     });
 
     if (!newMember) {
-      throw new BadGatewayException('Failed to add user to community');
+      throw new BadRequestException('MYBbre001');
     }
 
     return newMember;
@@ -57,7 +57,7 @@ export class CommunityUsersService {
     });
 
     if (!existingMember) {
-      throw new NotFoundException('User does not belong to this community');
+      throw new NotFoundException('MYBnfe006');
     }
 
     await this.prisma.community_members.delete({

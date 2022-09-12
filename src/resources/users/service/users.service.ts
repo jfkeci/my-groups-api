@@ -23,7 +23,7 @@ export class UsersService {
   async createOne(data: CreateUserDto) {
     const user = await this._create(data);
 
-    if (!user) throw new BadRequestException('Failed to create user');
+    if (!user) throw new BadRequestException('MYBbre003');
 
     return user;
   }
@@ -45,7 +45,7 @@ export class UsersService {
       where: { id: userId }
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     return user;
   }
@@ -65,9 +65,7 @@ export class UsersService {
     });
 
     if (!communities || !communities.length) {
-      throw new NotFoundException(
-        'No communities found for user, please create a new community'
-      );
+      throw new NotFoundException('MYBnfe016');
     }
 
     return communities;
@@ -112,7 +110,7 @@ export class UsersService {
     });
 
     if (!posts || !posts.length) {
-      throw new NotFoundException('No posts found for user');
+      throw new NotFoundException('MYBnfe017');
     }
 
     return posts;
@@ -125,7 +123,7 @@ export class UsersService {
     });
 
     if (!memberships) {
-      throw new NotFoundException('No communities that user belongs to found');
+      throw new NotFoundException('MYBnfe018');
     }
 
     const posts = await this.prisma.posts.findMany({
@@ -147,7 +145,7 @@ export class UsersService {
     });
 
     if (!posts || !posts.length) {
-      throw new NotFoundException('No posts found');
+      throw new NotFoundException('MYBnfe015');
     }
 
     return posts;
@@ -162,7 +160,7 @@ export class UsersService {
       where: { id: Number(userId) }
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     return user;
   }

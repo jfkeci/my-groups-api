@@ -14,13 +14,13 @@ export class CommentsService {
   async createPostComment(postId: number, data: CreateCommentDto) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
 
-    if (!post) throw new NotFoundException('No post found');
+    if (!post) throw new NotFoundException('MYBnfe008');
 
     const user = await this.prisma.users.findUnique({
       where: { id: data.createdBy }
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     const comment = await this.prisma.comments.create({
       data: {
@@ -29,7 +29,7 @@ export class CommentsService {
       }
     });
 
-    if (!comment) throw new BadRequestException('Failed to create comment');
+    if (!comment) throw new BadRequestException('MYBbre006');
 
     return comment;
   }
@@ -55,7 +55,7 @@ export class CommentsService {
     });
 
     if (!postWithComments) {
-      throw new NotFoundException('No post found');
+      throw new NotFoundException('MYBnfe008');
     }
 
     return postWithComments;
@@ -64,14 +64,14 @@ export class CommentsService {
   async getPostComment(postId: number, commentId: number) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
 
-    if (!post) throw new NotFoundException('No post found');
+    if (!post) throw new NotFoundException('MYBnfe008');
 
     const comment = await this.prisma.comments.findUnique({
       where: { id: commentId }
     });
 
     if (!comment) {
-      throw new NotFoundException('No comment found');
+      throw new NotFoundException('MYBnfe009');
     }
 
     return comment;
@@ -84,14 +84,14 @@ export class CommentsService {
   ) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
 
-    if (!post) throw new NotFoundException('No post found');
+    if (!post) throw new NotFoundException('MYBnfe008');
 
     const comment = await this.prisma.comments.update({
       where: { id: commentId },
       data: { text: data.text }
     });
 
-    if (!comment) throw new NotFoundException('No comment found');
+    if (!comment) throw new NotFoundException('MYBnfe009');
 
     return comment;
   }
@@ -99,13 +99,13 @@ export class CommentsService {
   async deletePostComment(postId: number, commentId: number) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
 
-    if (!post) throw new NotFoundException('No post found');
+    if (!post) throw new NotFoundException('MYBnfe008');
 
     const comment = await this.prisma.comments.delete({
       where: { id: commentId }
     });
 
-    if (!comment) throw new NotFoundException('No comment found');
+    if (!comment) throw new NotFoundException('MYBnfe009');
 
     return comment;
   }

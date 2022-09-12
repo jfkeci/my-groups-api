@@ -20,11 +20,11 @@ export class CommunitiesService {
       id: Number(data.createdBy)
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     const community = await this.prisma.communities.create({ data });
 
-    if (!community) throw new BadRequestException('Failed to create community');
+    if (!community) throw new BadRequestException('MYBbre007');
 
     await this.prisma.community_members.create({
       data: {
@@ -42,7 +42,7 @@ export class CommunitiesService {
     });
 
     if (!communities || !communities.length) {
-      throw new NotFoundException('No communities found');
+      throw new NotFoundException('MYBnfe004');
     }
 
     return communities;
@@ -54,7 +54,7 @@ export class CommunitiesService {
       data
     });
 
-    if (!community) throw new BadRequestException('Failed to update community');
+    if (!community) throw new BadRequestException('MYBbre008');
 
     return community;
   }
@@ -62,7 +62,7 @@ export class CommunitiesService {
   async deleteOne(query) {
     const community = await this.prisma.communities.delete({ where: query });
 
-    if (!community) throw new BadRequestException('Failed to delete community');
+    if (!community) throw new BadRequestException('MYBbre009');
 
     return community;
   }
@@ -86,7 +86,7 @@ export class CommunitiesService {
       }
     });
 
-    if (!community) throw new NotFoundException('No community found');
+    if (!community) throw new NotFoundException('MYBnfe003');
 
     return community;
   }
@@ -96,7 +96,7 @@ export class CommunitiesService {
       where: query
     });
 
-    if (!community) throw new BadRequestException('No community found');
+    if (!community) throw new NotFoundException('MYBnfe003');
 
     return community;
   }

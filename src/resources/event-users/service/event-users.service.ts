@@ -18,14 +18,14 @@ export class EventUsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('No user found');
+      throw new NotFoundException('MYBnfe001');
     }
     const event = await this.prisma.posts.findUnique({
       where: { id: data.eventId }
     });
 
     if (!event) {
-      throw new NotFoundException('No event found');
+      throw new NotFoundException('MYBnfe010');
     }
 
     const existingEventUser = await this.prisma.event_users.findFirst({
@@ -36,7 +36,7 @@ export class EventUsersService {
     });
 
     if (existingEventUser) {
-      throw new ConflictException('User is already a part of this event');
+      throw new ConflictException('MYBcfe005');
     }
 
     const eventUser = await this.prisma.event_users.create({
@@ -47,7 +47,7 @@ export class EventUsersService {
     });
 
     if (!eventUser) {
-      throw new BadRequestException('Failed to add user to event');
+      throw new BadRequestException('MYBbre011');
     }
 
     return eventUser;
@@ -55,9 +55,7 @@ export class EventUsersService {
 
   async removeEventUser(data: RemoveUserFromEventDto) {
     if (!data.eventUserId && (!data.eventId || !data.userId)) {
-      throw new BadRequestException(
-        'Either pass eventUserId or event and user id'
-      );
+      throw new BadRequestException('MYBbre012');
     }
 
     if (data.eventUserId) {
@@ -66,7 +64,7 @@ export class EventUsersService {
       });
 
       if (!eventUser) {
-        throw new NotFoundException('No event user found');
+        throw new NotFoundException('MYBnfe011');
       }
 
       await this.prisma.event_users.delete({
@@ -84,7 +82,7 @@ export class EventUsersService {
     });
 
     if (!eventUser) {
-      throw new NotFoundException('No event user found');
+      throw new NotFoundException('MYBnfe011');
     }
 
     await this.prisma.event_users.delete({ where: { id: eventUser.id } });

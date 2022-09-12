@@ -17,14 +17,14 @@ export class PollOptionVotesService {
       where: { id: data.userId }
     });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     const poll = await this.prisma.posts.findUnique({
       where: { id: data.pollId }
     });
 
     if (!poll) {
-      throw new NotFoundException('No poll found');
+      throw new NotFoundException('MYBnfe012');
     }
 
     const existingVote = await this.prisma.poll_option_votes.findFirst({
@@ -36,7 +36,7 @@ export class PollOptionVotesService {
     });
 
     if (existingVote) {
-      throw new ConflictException('User already voted for this option');
+      throw new ConflictException('MYBcfe006');
     }
 
     const vote = await this.prisma.poll_option_votes.create({
@@ -48,7 +48,7 @@ export class PollOptionVotesService {
     });
 
     if (!vote) {
-      throw new BadRequestException('Fauiled to add vote to option');
+      throw new BadRequestException('MYBbre013');
     }
 
     return vote;
@@ -56,9 +56,7 @@ export class PollOptionVotesService {
 
   async removeVoteFromOption(data: RemoveVoteFromOptionDto) {
     if (!data.voteId && (!data.pollId || !data.optionId || !data.userId)) {
-      throw new BadRequestException(
-        'Either pass voteId or poll, option and user id'
-      );
+      throw new BadRequestException('MYBbre014');
     }
 
     if (data.voteId) {
@@ -67,7 +65,7 @@ export class PollOptionVotesService {
       });
 
       if (!vote) {
-        throw new NotFoundException('No option vote found');
+        throw new NotFoundException('MYBnfe013');
       }
 
       await this.prisma.poll_option_votes.delete({
@@ -86,7 +84,7 @@ export class PollOptionVotesService {
     });
 
     if (!vote) {
-      throw new NotFoundException('No option vote found');
+      throw new NotFoundException('MYBnfe013');
     }
 
     await this.prisma.poll_option_votes.delete({ where: { id: vote.id } });

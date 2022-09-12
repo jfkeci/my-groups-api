@@ -11,7 +11,7 @@ export class PollOptionsService {
     });
 
     if (!options || !options.length) {
-      throw new NotFoundException('No poll options found');
+      throw new NotFoundException('MYBnfe014');
     }
 
     return options;

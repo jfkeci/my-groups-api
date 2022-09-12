@@ -18,9 +18,7 @@ export class AuthService {
   async registerUser(data: RegisterUserDto) {
     if (data.isAdmin) {
       if (!data.adminVoucher) {
-        throw new BadRequestException(
-          'Only super admin can create an admin user'
-        );
+        throw new BadRequestException('MYBbre002');
       }
 
       const admin = await this.prisma.users.findUnique({
@@ -28,11 +26,11 @@ export class AuthService {
       });
 
       if (!admin) {
-        throw new NotFoundException('No admin found');
+        throw new NotFoundException('MYBnfe007');
       }
 
       if (!admin.isAdmin) {
-        throw new ConflictException('Vaucher user is not an admin');
+        throw new ConflictException('MYBcfe002');
       }
     }
 
@@ -43,11 +41,11 @@ export class AuthService {
     });
 
     if (users.length && users.some((u) => u.username == data.username)) {
-      throw new ConflictException('Username taken');
+      throw new ConflictException('MYBcfe003');
     }
 
     if (users.length && users.some((u) => u.email == data.email)) {
-      throw new ConflictException('Email taken');
+      throw new ConflictException('MYBcfe004');
     }
 
     data.password = await bcrypt.hash(data.password, 10);
@@ -66,7 +64,7 @@ export class AuthService {
       }
     });
 
-    if (!newUser) throw new BadRequestException('Failed to create user');
+    if (!newUser) throw new BadRequestException('MYBbre003');
 
     return {
       ...newUser,
@@ -82,11 +80,11 @@ export class AuthService {
     let query;
 
     if (!data) {
-      throw new BadRequestException('Provide email or username with password');
+      throw new BadRequestException('MYBbre004');
     }
 
     if (!data.username && !data.email) {
-      throw new BadRequestException('Provide email or username');
+      throw new BadRequestException('MYBbre005');
     } else if (data.username) {
       query = { username: data.username };
     } else if (data.email) {
@@ -95,7 +93,7 @@ export class AuthService {
 
     const user = await this.prisma.users.findUnique({ where: query });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     if (await bcrypt.compare(data.password, user.password)) {
       return {

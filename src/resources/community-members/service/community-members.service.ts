@@ -12,13 +12,13 @@ export class CommunityMembersService {
   async addMemberToCommunity(userId: number, communityId: number) {
     const user = await this.prisma.users.findUnique({ where: { id: userId } });
 
-    if (!user) throw new NotFoundException('No user found');
+    if (!user) throw new NotFoundException('MYBnfe001');
 
     const community = await this.prisma.communities.findUnique({
       where: { id: communityId }
     });
 
-    if (!community) throw new NotFoundException('No community found');
+    if (!community) throw new NotFoundException('MYBnfe003');
 
     const membership = await this.prisma.community_members.create({
       data: {
@@ -28,7 +28,7 @@ export class CommunityMembersService {
     });
 
     if (!membership) {
-      throw new BadRequestException('Failed to add user to community');
+      throw new BadRequestException('MYBbre001');
     }
 
     return membership;
@@ -55,7 +55,7 @@ export class CommunityMembersService {
     });
 
     if (!community) {
-      throw new NotFoundException('No community found');
+      throw new NotFoundException('MYBnfe003');
     }
 
     return community;
