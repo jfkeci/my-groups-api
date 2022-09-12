@@ -1,17 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginUserDto {
-  @IsNotEmpty({ groups: ['login-via-username'] })
-  @IsOptional({ groups: ['login-via-email'] })
+  @IsNotEmpty()
   @IsString()
-  username?: string;
+  email: string;
 
-  @IsNotEmpty({ groups: ['login-via-email'] })
-  @IsOptional({ groups: ['login-via-username'] })
+  @IsNotEmpty()
   @IsString()
-  email?: string;
-
-  @IsNotEmpty({ groups: ['login-via-username', 'login-via-email'] })
-  @IsString({ message: 'Password should be a valid string' })
   password: string;
 }

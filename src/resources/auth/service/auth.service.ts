@@ -15,6 +15,31 @@ import { generateJwt } from 'src/utilities/utils/gen-token.utils';
 export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async loginUser(data: LoginUserDto) {
+    if (!data) {
+      throw new BadRequestException('MYBbre004');
+    }
+
+    const user = await this.prisma.users.findUnique({
+      where: { email: data.email }
+    });
+
+    if (!user) throw new NotFoundException('MYBnfe001');
+
+    if (await bcrypt.compare(data.password, user.password)) {
+      return {
+        ...user,
+        password: null,
+        token: await generateJwt(
+          { id: user.id, username: user.username },
+          process.env.TOKEN_SECRET
+        )
+      };
+    } else {
+      throw new UnauthorizedException('Not authorised');
+    }
+  }
+
   async registerUser(data: RegisterUserDto) {
     if (data.isAdmin) {
       if (!data.adminVoucher) {
@@ -74,38 +99,5 @@ export class AuthService {
         process.env.TOKEN_SECRET
       )
     };
-  }
-
-  async loginUser(data: LoginUserDto) {
-    let query;
-
-    if (!data) {
-      throw new BadRequestException('MYBbre004');
-    }
-
-    if (!data.username && !data.email) {
-      throw new BadRequestException('MYBbre005');
-    } else if (data.username) {
-      query = { username: data.username };
-    } else if (data.email) {
-      query = { email: data.email };
-    }
-
-    const user = await this.prisma.users.findUnique({ where: query });
-
-    if (!user) throw new NotFoundException('MYBnfe001');
-
-    if (await bcrypt.compare(data.password, user.password)) {
-      return {
-        ...user,
-        password: null,
-        token: await generateJwt(
-          { id: user.id, username: user.username },
-          process.env.TOKEN_SECRET
-        )
-      };
-    } else {
-      throw new UnauthorizedException('Not authorised');
-    }
   }
 }
