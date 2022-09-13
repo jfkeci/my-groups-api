@@ -16,17 +16,21 @@ export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
   async loginUser(data: LoginUserDto) {
-    if (!data) {
-      throw new BadRequestException('MYBbre004');
-    }
-
+    // Trazenje korisnika na temelju email-a
+    // SQL: SELECT * FROM users WHERE email=<data.email>;
     const user = await this.prisma.users.findUnique({
       where: { email: data.email }
     });
 
-    if (!user) throw new NotFoundException('MYBnfe001');
+    // Ako korisnik nije pronaden
+    if (!user) {
+      throw new NotFoundException('MYBnfe001'); // No user found
+    }
 
+    // Usporedivanje enkriptirane lozinke bcrypt paketom
     if (await bcrypt.compare(data.password, user.password)) {
+      // Ako se lozinka podudara s lozinkom koja je poslana u zahtjevu klijenta
+      // Vraca se korisnik s tokenom za pristup API-u
       return {
         ...user,
         password: null,
@@ -36,10 +40,12 @@ export class AuthService {
         )
       };
     } else {
+      // Ako se lozinka ne podudara server vraca gresku
       throw new UnauthorizedException('Not authorised');
     }
   }
 
+  
   async registerUser(data: RegisterUserDto) {
     if (data.isAdmin) {
       if (!data.adminVoucher) {

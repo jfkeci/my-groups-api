@@ -16,23 +16,26 @@ export class CommunitiesService {
   ) {}
 
   async createOne(data: CreateCommunityDto) {
+    // Provjera postoji li korisnik u bazi podataka
     const user = await this.userService._findUnique({
       id: Number(data.createdBy)
     });
-
-    if (!user) throw new NotFoundException('MYBnfe001');
-
+    //Ako korisnik ne postoji, server vraca gresku
+    if (!user) throw new NotFoundException('MYBnfe001'); // No user found
+    // Ako korisnik postoji kreira se nova zajednica kojoj je taj korisnik vlasnik (admin)
     const community = await this.prisma.communities.create({ data });
-
-    if (!community) throw new BadRequestException('MYBbre007');
-
+    // Ako je zajednica neuspjesno kreirana pomocu PrismaORM-a, server baca gresku
+    if (!community) throw new BadRequestException('MYBbre007'); // Failed to create community
+    // Nakon sto se zajednica pravilno kreira, sprema se novi clan zajednice u bazu podataka
+    // Kreira se novi redak u tablici "community_members" koji sadrzi
+    // identifikator korisnika koji je kreirao zajednicu te identifikator novo kreirane zajednice
     await this.prisma.community_members.create({
       data: {
         community: community.id,
         user: data.createdBy
       }
     });
-
+    // Na kraju svega vraca se rezultat novo kreirane zajednice u odgovoru servera
     return community;
   }
 
