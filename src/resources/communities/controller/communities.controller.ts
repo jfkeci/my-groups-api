@@ -12,10 +12,23 @@ import { CommunitiesService } from '../service/communities.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
 import { CommunityIdParamDto } from '../dto/community-params.dto';
+import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
 
 @Controller('')
 export class CommunitiesController {
   constructor(private readonly connumityService: CommunitiesService) {}
+
+  @HttpCode(201)
+  @Post('check/is-community-admin')
+  isUserCommunityAdmin(@Body() data: CommunityUserDto) {
+    return this.connumityService.isUserCommunityAdmin(data);
+  }
+
+  @HttpCode(201)
+  @Post('check/is-community-member')
+  isUserCommunityMember(@Body() data: CommunityUserDto) {
+    return this.connumityService.isUserCommunityMember(data);
+  }
 
   @HttpCode(201)
   @Post()

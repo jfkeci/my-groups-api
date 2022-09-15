@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post
+} from '@nestjs/common';
 import { CommunityUserDto } from '../dto/community-user.dto';
 import { CommunityUsersService } from '../service/community-users.service';
 
@@ -16,5 +24,11 @@ export class CommunityUsersController {
   @Delete()
   removeUserFromCommunity(@Body() body: CommunityUserDto) {
     return this.communityUsersService.removeUserFromCommunity(body);
+  }
+
+  @HttpCode(200)
+  @Get(':communityId')
+  getCommunityUsers(@Param('communityId') communityId: string) {
+    return this.communityUsersService.getCommunityUsers(Number(communityId));
   }
 }

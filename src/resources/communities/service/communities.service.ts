@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
 import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
@@ -130,5 +131,50 @@ export class CommunitiesService {
 
   async _findUnique(query) {
     return await this.prisma.communities.findUnique({ where: query });
+  }
+
+  async isUserCommunityAdmin(data: CommunityUserDto) {
+    const community = await this.prisma.communities.findUnique({
+      where: { id: Number(data.community) }
+    });
+
+    if (!community) return false;
+
+    const user = await this.prisma.users.findUnique({
+      where: { id: Number(data.user) }
+    });
+
+    if (!user) return false;
+
+    if (user.isAdmin) return true;
+
+    if (community.createdBy == data.user) return true;
+
+    return false;
+  }
+
+  async isUserCommunityMember(data: CommunityUserDto) {
+    const community = await this.prisma.communities.findUnique({
+      where: { id: Number(data.community) }
+    });
+
+    if (!community) return false;
+
+    const user = await this.prisma.users.findUnique({
+      where: { id: Number(data.user) }
+    });
+
+    if (!user) return false;
+
+    const community_member = await this.prisma.community_members.findFirst({
+      where: {
+        user: Number(data.user),
+        community: Number(data.community)
+      }
+    });
+
+    if (community_member) return true;
+
+    return false;
   }
 }
