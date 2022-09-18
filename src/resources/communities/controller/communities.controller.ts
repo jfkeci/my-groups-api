@@ -56,7 +56,7 @@ export class CommunitiesController {
 
   @HttpCode(200)
   @Patch(':communityId')
-  update(
+  updateOne(
     @Param() params: CommunityIdParamDto,
     @Body() data: UpdateCommunityDto
   ) {

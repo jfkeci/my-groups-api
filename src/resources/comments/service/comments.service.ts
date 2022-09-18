@@ -3,13 +3,18 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
+import { CommentOwnerDto } from '../dto/comment-id-param.dto';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService
+  ) {}
 
   async createPostComment(postId: number, data: CreateCommentDto) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
@@ -24,14 +29,42 @@ export class CommentsService {
 
     const comment = await this.prisma.comments.create({
       data: {
-        ...data,
+        createdBy: data.createdBy,
+        text: data.text,
         post: postId
       }
     });
 
     if (!comment) throw new BadRequestException('MYBbre006');
 
-    return comment;
+    let posts;
+
+    if (data.community) {
+      posts = await this.userService.getUserCommunityPosts(
+        Number(data.createdBy),
+        Number(data.community)
+      );
+    } else {
+      posts = await this.userService.getUserPostsForAllCommunities(
+        Number(data.createdBy)
+      );
+    }
+
+    return posts;
+  }
+
+  async isUserCommentOwner(data: CommentOwnerDto) {
+    console.log(data);
+
+    const comment = await this.prisma.comments.findFirst({ where: data });
+
+    console.log(comment);
+
+    if (comment) {
+      return true;
+    }
+
+    return false;
   }
 
   async getPostComments(postId: number) {
@@ -93,20 +126,54 @@ export class CommentsService {
 
     if (!comment) throw new NotFoundException('MYBnfe009');
 
-    return comment;
+    let posts;
+
+    if (data.community) {
+      posts = await this.userService.getUserCommunityPosts(
+        Number(comment.createdBy),
+        Number(data.community)
+      );
+    } else {
+      posts = await this.userService.getUserPostsForAllCommunities(
+        Number(comment.createdBy)
+      );
+    }
+
+    return posts;
   }
 
-  async deletePostComment(postId: number, commentId: number) {
+  async deletePostComment(
+    postId: number,
+    commentId: number,
+    community?: number
+  ) {
     const post = await this.prisma.posts.findUnique({ where: { id: postId } });
 
     if (!post) throw new NotFoundException('MYBnfe008');
 
-    const comment = await this.prisma.comments.delete({
+    const comment = await this.prisma.comments.findUnique({
       where: { id: commentId }
     });
 
     if (!comment) throw new NotFoundException('MYBnfe009');
 
-    return comment;
+    await this.prisma.comments.delete({
+      where: { id: commentId }
+    });
+
+    let posts;
+
+    if (community) {
+      posts = await this.userService.getUserCommunityPosts(
+        Number(comment.createdBy),
+        Number(community)
+      );
+    } else {
+      posts = await this.userService.getUserPostsForAllCommunities(
+        Number(comment.createdBy)
+      );
+    }
+
+    return posts;
   }
 }

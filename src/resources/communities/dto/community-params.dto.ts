@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CommunityIdParamDto {
   @IsNotEmpty()
@@ -11,4 +11,10 @@ export class CommunityUserParamDto {
 
   @IsNotEmpty()
   userId: string;
+}
+
+export class OptionalCommunityDto {
+  @IsNumber()
+  @IsOptional()
+  community?: number;
 }

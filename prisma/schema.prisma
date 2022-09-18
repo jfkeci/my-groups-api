@@ -23,9 +23,11 @@ model users {
   comments          comments[]
   communities       communities[]
   community_admins  community_admins[]
+  community_invites community_invites[]
   community_members community_members[]
   event_users       event_users[]
   poll_option_votes poll_option_votes[]
+  post_likes        post_likes[]
   posts             posts[]
 }
 
@@ -39,6 +41,7 @@ model communities {
   createdBy         Int                 @db.UnsignedInt
   users             users               @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "community_created_by_user")
   community_admins  community_admins[]
+  community_invites community_invites[]
   community_members community_members[]
   posts             posts[]
 
@@ -62,6 +65,7 @@ model posts {
   event_users       event_users[]
   poll_option_votes poll_option_votes[]
   poll_options      poll_options[]
+  post_likes        post_likes[]
 
   @@index([community], map: "postCommunity_idx")
   @@index([createdBy], map: "postCreatedBy_idx")
@@ -141,4 +145,29 @@ model community_admins {
 
   @@index([community], map: "administrated_community_idx")
   @@index([user], map: "community_admin_admin_idx")
+}
+
+model community_invites {
+  id          Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  community   Int         @db.UnsignedInt
+  user        Int         @db.UnsignedInt
+  accepted    Boolean     @default(false)
+  createdAt   DateTime    @default(now()) @db.DateTime(0)
+  communities communities @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "community_invite_community")
+  users       users       @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "community_invite_user")
+
+  @@index([community], map: "community_invite_community_idx")
+  @@index([user], map: "community_invite_user_idx")
+}
+
+model post_likes {
+  id        Int      @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  post      Int      @db.UnsignedInt
+  user      Int      @db.UnsignedInt
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  posts     posts    @relation(fields: [post], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_like_post")
+  users     users    @relation(fields: [user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_like_user")
+
+  @@index([post], map: "post_like_post_idx")
+  @@index([user], map: "post_like_user_idx")
 }

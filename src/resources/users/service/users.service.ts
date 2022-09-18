@@ -50,6 +50,22 @@ export class UsersService {
     return user;
   }
 
+  async searchUsers(text: string, order?: string) {
+    const users = await this.prisma.users.findMany({
+      where: {
+        OR: [
+          { firstName: { contains: text } },
+          { lastName: { contains: text } },
+          { username: { contains: text } }
+        ]
+      }
+    });
+
+    if (!users || !users.length) return [];
+
+    return users;
+  }
+
   async getUserCommunities(userId: number) {
     const communities = await this.prisma.community_members.findMany({
       where: { user: userId },
@@ -74,7 +90,7 @@ export class UsersService {
   async getUserCommunityPosts(
     userId: number,
     communityId: number,
-    createdBy: boolean
+    createdBy?: boolean
   ) {
     const memberships = await this.prisma.community_members.findMany({
       where: { user: userId },
@@ -116,7 +132,7 @@ export class UsersService {
     return posts;
   }
 
-  async getUserPostsForAllCommunities(userId: number, createdBy: boolean) {
+  async getUserPostsForAllCommunities(userId: number, createdBy?: boolean) {
     const memberships = await this.prisma.community_members.findMany({
       where: { user: userId },
       include: { communities: { select: { id: true } } }
