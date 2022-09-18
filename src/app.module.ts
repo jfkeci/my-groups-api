@@ -11,7 +11,7 @@ import { PostsModule } from './resources/posts/posts.module';
 import { UsersModule } from './resources/users/users.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AuthGuard } from './utilities/guards/auth.guard';
-import { APP_GUARD, RouterModule } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
@@ -48,10 +48,10 @@ import { CommunityUsersModule } from './community-users/community-users.module';
     CommunityUsersModule
   ],
   providers: [
-    /* {
+    {
       provide: APP_GUARD,
       useClass: AuthGuard
-    } */
+    }
   ],
   controllers: [AppController]
 })

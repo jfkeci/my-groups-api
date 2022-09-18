@@ -22,7 +22,6 @@ export class CommentsController {
     @Param() param: PostIdParamDto,
     @Body() createCommentDto: CreateCommentDto
   ) {
-    console.log('HERE');
     return this.commentsService.createPostComment(
       Number(param.postId),
       createCommentDto

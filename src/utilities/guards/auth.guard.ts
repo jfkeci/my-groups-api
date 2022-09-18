@@ -42,10 +42,7 @@ export class AuthGuard implements CanActivate {
   private ignoreAuth(context): boolean {
     const ignoredControllers = ['AuthController'];
 
-    return (
-      process.env.NODE_ENV === 'development' &&
-      ignoredControllers.includes(context)
-    );
+    return ignoredControllers.includes(context);
   }
 
   private async authUser(userId: string | null): Promise<boolean> {
@@ -68,9 +65,9 @@ export const getIdFromToken = (req: Request): string | null | undefined => {
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
+    req.headers.authorization.startsWith('bearer')
   ) {
-    token = req.headers.authorization.split(' ')[1];
+    token = req.headers.authorization.replace('bearer ', '');
   } else {
     return null;
   }
