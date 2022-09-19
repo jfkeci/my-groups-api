@@ -1,8 +1,16 @@
-import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Query
+} from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserIdParamDto } from '../dto/user-id-param.dto';
 import { UserCommunityParamsDto } from 'src/resources/communities/dto/user-community-params.dto';
 import { CraetedByQueryParamDto } from '../dto/created-by-query.param.dto';
+import { SearchUsersQueryDto } from '../dto/search-query.dto';
 
 @Controller('user')
 export class UsersController {

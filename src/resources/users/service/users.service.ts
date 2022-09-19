@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 
 export const userSelectFields = {
   id: true,
   firstName: true,
   lastName: true,
   username: true,
-  image: true
+  image: true,
+  isAdmin: true
 };
 
 @Injectable()
@@ -48,22 +48,6 @@ export class UsersService {
     if (!user) throw new NotFoundException('MYBnfe001');
 
     return user;
-  }
-
-  async searchUsers(text: string, order?: string) {
-    const users = await this.prisma.users.findMany({
-      where: {
-        OR: [
-          { firstName: { contains: text } },
-          { lastName: { contains: text } },
-          { username: { contains: text } }
-        ]
-      }
-    });
-
-    if (!users || !users.length) return [];
-
-    return users;
   }
 
   async getUserCommunities(userId: number) {

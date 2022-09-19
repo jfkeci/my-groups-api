@@ -19,6 +19,7 @@ import { PollOptionsModule } from './resources/poll-options/poll-options.module'
 import { PollOptionVotesModule } from './resources/poll-option-votes/poll-option-votes.module';
 import { EventUsersModule } from './resources/event-users/event-users.module';
 import { CommunityUsersModule } from './community-users/community-users.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { CommunityUsersModule } from './community-users/community-users.module';
     PollOptionsModule,
     PollOptionVotesModule,
     EventUsersModule,
-    CommunityUsersModule
+    CommunityUsersModule,
+    SearchModule
   ],
   providers: [
     {
