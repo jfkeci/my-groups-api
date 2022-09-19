@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
    * @returns boolean
    */
   private ignoreAuth(context): boolean {
-    const ignoredControllers = ['AuthController'];
+    const ignoredControllers = ['AuthController', 'AppController'];
 
     return ignoredControllers.includes(context);
   }
