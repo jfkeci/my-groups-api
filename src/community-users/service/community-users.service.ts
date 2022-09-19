@@ -47,15 +47,17 @@ export class CommunityUsersService {
       throw new BadRequestException('MYBbre001');
     }
 
-    return newMember;
+    return await this.getCommunityUsers(data.community);
   }
 
   async removeUserFromCommunity(data: CommunityUserDto) {
+    console.log(data);
+
     const existingMember = await this.prisma.community_members.findFirst({
-      where: {
-        ...data
-      }
+      where: data
     });
+
+    console.log('removeUserFromCommunity.existingMember', existingMember);
 
     if (!existingMember) {
       throw new NotFoundException('MYBnfe006');
@@ -67,7 +69,7 @@ export class CommunityUsersService {
       }
     });
 
-    return existingMember;
+    return await this.getCommunityUsers(data.community);
   }
 
   async getCommunityUsers(commnityId: number) {
@@ -81,6 +83,8 @@ export class CommunityUsersService {
     });
 
     if (!community) throw new NotFoundException('noCommunityFound');
+
+    if (!community.community_members.length) return [];
 
     if (community.community_members.length) {
       return community.community_members.map((cm) => ({

@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Post
-} from '@nestjs/common';
+import { Get, Post, Body, Param, HttpCode, Controller } from '@nestjs/common';
 import { CommunityUserDto } from '../dto/community-user.dto';
 import { CommunityUsersService } from '../service/community-users.service';
 
@@ -21,7 +13,7 @@ export class CommunityUsersController {
   }
 
   @HttpCode(200)
-  @Delete()
+  @Post('delete')
   removeUserFromCommunity(@Body() body: CommunityUserDto) {
     return this.communityUsersService.removeUserFromCommunity(body);
   }
