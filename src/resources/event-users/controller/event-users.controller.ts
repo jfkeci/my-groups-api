@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, HttpCode, Post } from '@nestjs/common';
 import { AddUserToEventDto } from '../dto/add-user-to-event.dto';
 import { RemoveUserFromEventDto } from '../dto/remove-user-from-event.dto';
+import { ToggleEventUserDto } from '../dto/toggle-event-user.dto';
 import { EventUsersService } from '../service/event-users.service';
 
 @Controller('event-users')
@@ -17,5 +18,11 @@ export class EventUsersController {
   @Delete()
   removeEventUser(@Body() body: RemoveUserFromEventDto) {
     return this.eventUsersService.removeEventUser(body);
+  }
+
+  @HttpCode(200)
+  @Post('/toggle-event-user')
+  toggleEventUser(@Body() body: ToggleEventUserDto) {
+    return this.eventUsersService.toggleEventUser(body);
   }
 }

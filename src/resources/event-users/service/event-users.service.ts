@@ -4,13 +4,18 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { UsersService } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { AddUserToEventDto } from '../dto/add-user-to-event.dto';
 import { RemoveUserFromEventDto } from '../dto/remove-user-from-event.dto';
+import { ToggleEventUserDto } from '../dto/toggle-event-user.dto';
 
 @Injectable()
 export class EventUsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService
+  ) {}
 
   async addUserToEvent(data: AddUserToEventDto) {
     const user = await this.prisma.users.findUnique({
@@ -88,5 +93,42 @@ export class EventUsersService {
     await this.prisma.event_users.delete({ where: { id: eventUser.id } });
 
     return eventUser;
+  }
+
+  async toggleEventUser(data: ToggleEventUserDto) {
+    const user = await this.prisma.users.findUnique({
+      where: { id: Number(data.user) }
+    });
+
+    if (!user) throw new NotFoundException('MYBnfe001');
+
+    const post = await this.prisma.posts.findUnique({
+      where: { id: Number(data.event) }
+    });
+
+    if (!post) throw new NotFoundException('MYBnfe001');
+
+    const eventUser = await this.prisma.event_users.findFirst({ where: data });
+
+    if (eventUser) {
+      await this.prisma.event_users.deleteMany({ where: data });
+    } else {
+      await this.prisma.event_users.create({ data: data });
+    }
+
+    let posts;
+
+    if (post.community) {
+      posts = await this.userService.getUserCommunityPosts(
+        Number(data.user),
+        Number(post.community)
+      );
+    } else {
+      posts = await this.userService.getUserPostsForAllCommunities(
+        Number(data.user)
+      );
+    }
+
+    return posts;
   }
 }
