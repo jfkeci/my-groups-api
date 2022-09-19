@@ -3,7 +3,10 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { UsersService } from 'src/resources/users/service/users.service';
+import {
+  userSelectFields,
+  UsersService
+} from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CommentOwnerDto } from '../dto/comment-id-param.dto';
 import { CreateCommentDto } from '../dto/create-comment.dto';
@@ -71,19 +74,7 @@ export class CommentsService {
     const postWithComments = await this.prisma.posts.findUnique({
       where: { id: postId },
       include: {
-        comments: {
-          include: {
-            users: {
-              select: {
-                username: true,
-                firstName: true,
-                lastName: true,
-                image: true,
-                email: true
-              }
-            }
-          }
-        }
+        comments: { include: { users: { select: userSelectFields } } }
       }
     });
 

@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { userSelectFields } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 
 @Injectable()
@@ -38,19 +39,7 @@ export class CommunityMembersService {
     const community = await this.prisma.communities.findUnique({
       where: { id: communityId },
       include: {
-        community_members: {
-          include: {
-            users: {
-              select: {
-                username: true,
-                firstName: true,
-                lastName: true,
-                birthdate: true,
-                createdAt: true
-              }
-            }
-          }
-        }
+        community_members: { include: { users: { select: userSelectFields } } }
       }
     });
 

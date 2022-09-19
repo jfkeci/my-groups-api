@@ -13,7 +13,10 @@ export const userSelectFields = {
   lastName: true,
   username: true,
   image: true,
-  isAdmin: true
+  isAdmin: true,
+  createdAt: true,
+  birthdate: true,
+  email: true
 };
 
 @Injectable()

@@ -4,7 +4,10 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
-import { UsersService } from 'src/resources/users/service/users.service';
+import {
+  userSelectFields,
+  UsersService
+} from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
@@ -75,18 +78,7 @@ export class CommunitiesService {
     const community = await this.prisma.communities.findUnique({
       where: { id: communityId },
       include: {
-        community_members: {
-          include: {
-            users: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true,
-                image: true
-              }
-            }
-          }
-        }
+        community_members: { include: { users: { select: userSelectFields } } }
       }
     });
 

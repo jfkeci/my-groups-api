@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
+import { userSelectFields } from 'src/resources/users/service/users.service';
 import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CommunityUserDto } from '../dto/community-user.dto';
 
@@ -74,17 +75,7 @@ export class CommunityUsersService {
       where: { id: commnityId },
       include: {
         community_members: {
-          include: {
-            users: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                username: true,
-                image: true
-              }
-            }
-          }
+          include: { users: { select: userSelectFields } }
         }
       }
     });
