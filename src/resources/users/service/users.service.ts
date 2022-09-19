@@ -108,7 +108,8 @@ export class UsersService {
             }
           }
         },
-        event_users: { include: { users: { select: userSelectFields } } }
+        event_users: { include: { users: { select: userSelectFields } } },
+        post_likes: { include: { users: { select: userSelectFields } } }
       }
     });
 
@@ -143,7 +144,8 @@ export class UsersService {
             }
           }
         },
-        event_users: { include: { users: { select: userSelectFields } } }
+        event_users: { include: { users: { select: userSelectFields } } },
+        post_likes: { include: { users: { select: userSelectFields } } }
       }
     });
 

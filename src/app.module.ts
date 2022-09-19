@@ -20,6 +20,7 @@ import { PollOptionVotesModule } from './resources/poll-option-votes/poll-option
 import { EventUsersModule } from './resources/event-users/event-users.module';
 import { CommunityUsersModule } from './community-users/community-users.module';
 import { SearchModule } from './search/search.module';
+import { PostLikesModule } from './post-likes/post-likes.module';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { SearchModule } from './search/search.module';
     PollOptionVotesModule,
     EventUsersModule,
     CommunityUsersModule,
-    SearchModule
+    SearchModule,
+    PostLikesModule
   ],
   providers: [
     {
