@@ -16,42 +16,42 @@ import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
 
 @Controller('')
 export class CommunitiesController {
-  constructor(private readonly connumityService: CommunitiesService) {}
+  constructor(private readonly communityService: CommunitiesService) {}
 
   @HttpCode(201)
   @Post('check/is-community-admin')
   isUserCommunityAdmin(@Body() data: CommunityUserDto) {
-    return this.connumityService.isUserCommunityAdmin(data);
+    return this.communityService.isUserCommunityAdmin(data);
   }
 
   @HttpCode(201)
   @Post('check/is-community-member')
   isUserCommunityMember(@Body() data: CommunityUserDto) {
-    return this.connumityService.isUserCommunityMember(data);
+    return this.communityService.isUserCommunityMember(data);
   }
 
   @HttpCode(201)
   @Post()
   create(@Body() data: CreateCommunityDto) {
-    return this.connumityService.createOne(data);
+    return this.communityService.createOne(data);
   }
 
   @HttpCode(200)
   @Get()
   findMany() {
-    return this.connumityService.findMany({});
+    return this.communityService.findMany({});
   }
 
   @HttpCode(200)
   @Get(':communityId')
   findUnique(@Param() params: CommunityIdParamDto) {
-    return this.connumityService.findUnique({ id: Number(params.communityId) });
+    return this.communityService.findUnique({ id: Number(params.communityId) });
   }
 
   @HttpCode(200)
   @Get(':communityId/users')
   getCommunityUsers(@Param() params: CommunityIdParamDto) {
-    return this.connumityService.getCommunityUsers(Number(params.communityId));
+    return this.communityService.getCommunityUsers(Number(params.communityId));
   }
 
   @HttpCode(200)
@@ -60,7 +60,7 @@ export class CommunitiesController {
     @Param() params: CommunityIdParamDto,
     @Body() data: UpdateCommunityDto
   ) {
-    return this.connumityService.updateOne(
+    return this.communityService.updateOne(
       { id: Number(params.communityId) },
       data
     );
@@ -69,6 +69,6 @@ export class CommunitiesController {
   @HttpCode(204)
   @Delete(':communityId')
   deleteOne(@Param() params: CommunityIdParamDto) {
-    return this.connumityService.deleteOne({ id: Number(params.communityId) });
+    return this.communityService.deleteOne({ id: Number(params.communityId) });
   }
 }
