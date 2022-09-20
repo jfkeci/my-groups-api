@@ -58,5 +58,8 @@ export class CreatePostDto {
   @IsArray()
   @IsOptional()
   options?: OptionDto[];
-}
 
+  @IsArray()
+  @IsOptional()
+  location: number[];
+}
