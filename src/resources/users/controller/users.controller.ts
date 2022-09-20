@@ -10,15 +10,17 @@ import { UsersService } from '../service/users.service';
 import { UserIdParamDto } from '../dto/user-id-param.dto';
 import { UserCommunityParamsDto } from 'src/resources/communities/dto/user-community-params.dto';
 import { CraetedByQueryParamDto } from '../dto/created-by-query.param.dto';
-import { SearchUsersQueryDto } from '../dto/search-query.dto';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/:userId')
-  getUser(@Param() param: UserIdParamDto) {
-    return this.usersService.findOne(Number(param.userId));
+  getUser(
+    @Param() param: UserIdParamDto,
+    @Query('currentUser') currentUser: string
+  ) {
+    return this.usersService.findOne(Number(param.userId), Number(currentUser));
   }
 
   @Delete('/:userId')

@@ -43,10 +43,26 @@ export class UsersService {
     return await this.prisma.users.findUnique({ where: query });
   }
 
-  async findOne(userId: number) {
-    const user = await this.prisma.users.findFirst({
-      where: { id: userId }
-    });
+  async findOne(userId: number, loggedInUser?: number) {
+    let user;
+
+    if (!loggedInUser) {
+      user = await this.prisma.users.findFirst({
+        where: { id: userId }
+      });
+    }
+
+    if (loggedInUser) {
+      const currentUser = await this.prisma.users.findFirst({
+        where: { id: loggedInUser }
+      });
+
+      if (!loggedInUser) throw new NotFoundException('MYBnfe001');
+
+      user = await this.prisma.users.findFirst({
+        where: { id: userId }
+      });
+    }
 
     if (!user) throw new NotFoundException('MYBnfe001');
 
