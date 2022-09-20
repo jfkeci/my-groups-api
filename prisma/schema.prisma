@@ -59,6 +59,7 @@ model posts {
   image             String?             @db.VarChar(125)
   type              String              @db.VarChar(10)
   date              DateTime?           @db.DateTime(0)
+  location          Json?
   communities       communities         @relation(fields: [community], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCommunity")
   users             users               @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "postCreatedBy")
   comments          comments[]
