@@ -48,20 +48,55 @@ export class UsersService {
 
     if (!loggedInUser) {
       user = await this.prisma.users.findFirst({
-        where: { id: userId }
+        where: { id: userId },
+        include: { communities: true }
       });
     }
 
     if (loggedInUser) {
-      const currentUser = await this.prisma.users.findFirst({
-        where: { id: loggedInUser }
-      });
+      if (loggedInUser != userId) {
+        const currentUser = await this.prisma.users.findFirst({
+          where: { id: loggedInUser }
+        });
 
-      if (!loggedInUser) throw new NotFoundException('MYBnfe001');
+        if (!loggedInUser) throw new NotFoundException('MYBnfe001');
 
-      user = await this.prisma.users.findFirst({
-        where: { id: userId }
-      });
+        user = await this.prisma.users.findFirst({
+          where: { id: userId },
+          include: {
+            communities: {
+              include: {
+                posts: {
+                  where: { createdBy: userId },
+                  include: {
+                    post_likes: {
+                      include: { users: { select: userSelectFields } }
+                    },
+                    poll_options: {
+                      include: {
+                        poll_option_votes: {
+                          include: { users: { select: userSelectFields } }
+                        }
+                      }
+                    },
+                    comments: {
+                      include: { users: { select: userSelectFields } }
+                    },
+                    event_users: {
+                      include: { users: { select: userSelectFields } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+      } else {
+        user = await this.prisma.users.findFirst({
+          where: { id: userId },
+          include: { communities: true }
+        });
+      }
     }
 
     if (!user) throw new NotFoundException('MYBnfe001');
