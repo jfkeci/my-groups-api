@@ -18,18 +18,24 @@ import { WinstonModule } from 'nest-winston';
 import { PollOptionsModule } from './resources/poll-options/poll-options.module';
 import { PollOptionVotesModule } from './resources/poll-option-votes/poll-option-votes.module';
 import { EventUsersModule } from './resources/event-users/event-users.module';
-import { CommunityUsersModule } from './community-users/community-users.module';
-import { SearchModule } from './search/search.module';
-import { PostLikesModule } from './post-likes/post-likes.module';
+import { SearchModule } from './resources/search/search.module';
+import { CommunityUsersModule } from './resources/community-users/community-users.module';
+import { PostLikesModule } from './resources/post-likes/post-likes.module';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     PostsModule,
+    SearchModule,
     PrismaModule,
     CommentsModule,
+    PostLikesModule,
+    EventUsersModule,
+    PollOptionsModule,
     CommunitiesModule,
+    CommunityUsersModule,
+    PollOptionVotesModule,
     CommunityMembersModule,
     RouterModule.register(routerConfig),
     ConfigModule.forRoot({
@@ -43,13 +49,7 @@ import { PostLikesModule } from './post-likes/post-likes.module';
         maxFiles: process.env.LOG_MAX_FILES,
         maxSize: process.env.LOG_MAX_FILE_SIZE
       })
-    ),
-    PollOptionsModule,
-    PollOptionVotesModule,
-    EventUsersModule,
-    CommunityUsersModule,
-    SearchModule,
-    PostLikesModule
+    )
   ],
   providers: [
     {

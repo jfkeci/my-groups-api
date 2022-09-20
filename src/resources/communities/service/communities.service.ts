@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
 import {
   userSelectFields,
   UsersService
 } from 'src/resources/users/service/users.service';
-import { PrismaService } from 'src/utilities/prisma/prisma.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
+import { PrismaService } from 'src/utilities/prisma/prisma.service';
+import { CommunityUserDto } from 'src/resources/community-users/dto/community-user.dto';
 
 @Injectable()
 export class CommunitiesService {

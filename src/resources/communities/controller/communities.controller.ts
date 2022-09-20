@@ -8,11 +8,11 @@ import {
   Delete,
   HttpCode
 } from '@nestjs/common';
-import { CommunitiesService } from '../service/communities.service';
 import { CreateCommunityDto } from '../dto/create-community.dto';
 import { UpdateCommunityDto } from '../dto/update-community.dto';
 import { CommunityIdParamDto } from '../dto/community-params.dto';
-import { CommunityUserDto } from 'src/community-users/dto/community-user.dto';
+import { CommunitiesService } from '../service/communities.service';
+import { CommunityUserDto } from 'src/resources/community-users/dto/community-user.dto';
 
 @Controller('')
 export class CommunitiesController {
