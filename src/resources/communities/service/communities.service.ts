@@ -89,7 +89,12 @@ export class CommunitiesService {
 
   async findUnique(query) {
     const community = await this.prisma.communities.findUnique({
-      where: query
+      where: query,
+      include: {
+        community_members: { include: { users: { select: userSelectFields } } },
+        community_admins: { include: { users: { select: userSelectFields } } },
+        users: { select: userSelectFields }
+      }
     });
 
     if (!community) throw new NotFoundException('MYBnfe003');
