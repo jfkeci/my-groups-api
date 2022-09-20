@@ -32,7 +32,7 @@ export class UsersController {
   getUserCommunities(@Param() param: UserIdParamDto) {
     return this.usersService.getUserCommunities(Number(param.userId));
   }
-
+  //aaa
   @Get('/:userId/posts')
   getUserPostsForAllCommunities(
     @Param() param: UserIdParamDto,
